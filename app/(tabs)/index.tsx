@@ -1,4 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
+import { NavigationContainer, useNavigation } from "@react-navigation/native";
+import { createStackNavigator } from "@react-navigation/stack";
 import { useState } from "react";
 import {
   Modal,
@@ -6,9 +8,19 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
-  TouchableWithoutFeedback,
   View,
 } from "react-native";
+import AnalysisScreen from "./analysis";
+
+const Stack = createStackNavigator();
+// Stack navigation component that appears after choosing a file.
+function AnalysisStack() {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen name="Analysis" component={AnalysisScreen} />
+    </Stack.Navigator>
+  );
+}
 
 export default function Tab() {
   const [modalVisible, setModalVisible] = useState(false);
@@ -18,34 +30,36 @@ export default function Tab() {
     { name: "Walmart Contract 3-22-24.pdf" },
     { name: "Pacsun Contract 3-22-24.pdf" },
   ];
+  const navigation = useNavigation();
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Analyze a contract</Text>
+    <NavigationContainer>
+      <AnalysisStack />
+      <View style={styles.container}>
+        <Text style={styles.title}>Analyze a contract</Text>
 
-      {/* Upload box */}
-      <TouchableOpacity
-        style={styles.uploadBox}
-        onPress={() => setModalVisible(true)}
-      >
-        <Ionicons name="cloud-upload-outline" size={48} color="#777" />
-        <Text style={styles.uploadText}>Upload a contract</Text>
-      </TouchableOpacity>
+        {/* Upload box */}
+        <TouchableOpacity
+          style={styles.uploadBox}
+          onPress={() => setModalVisible(true)}
+        >
+          <Ionicons name="cloud-upload-outline" size={48} color="#777" />
+          <Text style={styles.uploadText}>Upload a contract</Text>
+        </TouchableOpacity>
 
-      <Text style={styles.orText}>or</Text>
+        <Text style={styles.orText}>or</Text>
 
-      <TouchableOpacity style={styles.takePictureButton}>
-        <Text style={styles.takePictureText}>Take a picture</Text>
-      </TouchableOpacity>
+        <TouchableOpacity style={styles.takePictureButton}>
+          <Text style={styles.takePictureText}>Take a picture</Text>
+        </TouchableOpacity>
 
-      {/* Upload Modal */}
-      <Modal
-        animationType="fade"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => { setModalVisible(false); }}
-      >
-        <TouchableWithoutFeedback onPress={() => setModalVisible(false)} style={{flex: 1}}>
+        {/* Upload Modal */}
+        <Modal
+          animationType="fade"
+          transparent={true}
+          visible={modalVisible}
+          onRequestClose={() => setModalVisible(false)}
+        >
           <View style={styles.modalBackground}>
             <View style={styles.modalContainer}>
               <Text style={styles.modalTitle}>Upload a file</Text>
@@ -56,12 +70,17 @@ export default function Tab() {
                 style={styles.fileList}
               >
                 {files.map((file, index) => (
-                  <TouchableOpacity key={index} style={styles.fileCard}>
+                  <TouchableOpacity
+                    onPress={() => navigation.navigate("Analysis")}
+                    key={index}
+                    style={styles.fileCard}
+                  >
                     <Ionicons
                       name="document-text-outline"
                       size={32}
                       color="#4B5563"
                     />
+
                     <Text style={styles.fileName}>{file.name}</Text>
                   </TouchableOpacity>
                 ))}
@@ -72,9 +91,9 @@ export default function Tab() {
               </TouchableOpacity>
             </View>
           </View>
-        </TouchableWithoutFeedback>
-      </Modal>
-    </View>
+        </Modal>
+      </View>
+    </NavigationContainer>
   );
 }
 
