@@ -6,6 +6,7 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
+  TouchableWithoutFeedback,
   View,
 } from "react-native";
 
@@ -42,34 +43,36 @@ export default function Tab() {
         animationType="fade"
         transparent={true}
         visible={modalVisible}
-        onRequestClose={() => setModalVisible(false)}
+        onRequestClose={() => { setModalVisible(false); }}
       >
-        <View style={styles.modalBackground}>
-          <View style={styles.modalContainer}>
-            <Text style={styles.modalTitle}>Upload a file</Text>
+        <TouchableWithoutFeedback onPress={() => setModalVisible(false)} style={{flex: 1}}>
+          <View style={styles.modalBackground}>
+            <View style={styles.modalContainer}>
+              <Text style={styles.modalTitle}>Upload a file</Text>
 
-            <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              style={styles.fileList}
-            >
-              {files.map((file, index) => (
-                <TouchableOpacity key={index} style={styles.fileCard}>
-                  <Ionicons
-                    name="document-text-outline"
-                    size={32}
-                    color="#4B5563"
-                  />
-                  <Text style={styles.fileName}>{file.name}</Text>
-                </TouchableOpacity>
-              ))}
-            </ScrollView>
+              <ScrollView
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                style={styles.fileList}
+              >
+                {files.map((file, index) => (
+                  <TouchableOpacity key={index} style={styles.fileCard}>
+                    <Ionicons
+                      name="document-text-outline"
+                      size={32}
+                      color="#4B5563"
+                    />
+                    <Text style={styles.fileName}>{file.name}</Text>
+                  </TouchableOpacity>
+                ))}
+              </ScrollView>
 
-            <TouchableOpacity style={styles.managePermissions}>
-              <Text style={styles.manageText}>Manage file permissions</Text>
-            </TouchableOpacity>
+              <TouchableOpacity style={styles.managePermissions}>
+                <Text style={styles.manageText}>Manage file permissions</Text>
+              </TouchableOpacity>
+            </View>
           </View>
-        </View>
+        </TouchableWithoutFeedback>
       </Modal>
     </View>
   );
