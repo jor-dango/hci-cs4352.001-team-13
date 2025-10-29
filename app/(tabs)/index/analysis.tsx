@@ -49,7 +49,7 @@ export default function AnalysisScreen() {
         </View>
       </View>
 
-      <View style={{ flex: 1, flexDirection: "row", gap: 24 }}>
+      <View style={{ flex: 1, flexDirection: "row", gap: 24, maxHeight: 36 }}>
         <TouchableOpacity style={styles.button}>
           <Text style={[GlobalStyles.small, { color: "#FFFFFF" }]}>
             Save to Archive
@@ -105,4 +105,3 @@ const styles = StyleSheet.create({
     borderRadius: 6,
   },
 });
-
