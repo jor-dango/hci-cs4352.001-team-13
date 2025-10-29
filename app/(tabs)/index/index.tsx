@@ -1,15 +1,16 @@
 import { Ionicons } from "@expo/vector-icons";
+import { router } from "expo-router";
 import { useState } from "react";
 import {
-    Modal,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
+  Modal,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from "react-native";
 
-export default function Upload() {
+export default function UploadScreen() {
   const [modalVisible, setModalVisible] = useState(false);
 
   const files = [
@@ -18,11 +19,21 @@ export default function Upload() {
     { name: "Pacsun Contract 3-22-24.pdf" },
   ];
 
+  const handleFileSelect = () => {
+    setModalVisible(false);
+    // Navigate to the analysis screen within this tab's stack
+    router.push("./analysis");
+  };
+
+  const handleTakePicture = () => {
+    // Navigate to the analysis screen
+    router.push("./analysis");
+  };
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Analyze a contract</Text>
 
-      {/* Upload box */}
       <TouchableOpacity
         style={styles.uploadBox}
         onPress={() => setModalVisible(true)}
@@ -33,29 +44,13 @@ export default function Upload() {
 
       <Text style={styles.orText}>or</Text>
 
-      <TouchableOpacity style={styles.takePictureButton}>
+      <TouchableOpacity
+        style={styles.takePictureButton}
+        onPress={handleTakePicture}
+      >
         <Text style={styles.takePictureText}>Take a picture</Text>
       </TouchableOpacity>
 
-      {/* Bottom Navigation */}
-      <View style={styles.bottomNav}>
-        <TouchableOpacity style={styles.navItem}>
-          <Ionicons name="cloud-upload-outline" size={22} color="#4338CA" />
-          <Text style={[styles.navText, styles.navActive]}>Upload</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.navItem}>
-          <Ionicons name="document-text-outline" size={22} color="#000" />
-          <Text style={styles.navText}>History</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.navItem}>
-          <Ionicons name="settings-outline" size={22} color="#000" />
-          <Text style={styles.navText}>Settings</Text>
-        </TouchableOpacity>
-      </View>
-
-      {/* Upload Modal */}
       <Modal
         animationType="fade"
         transparent={true}
@@ -72,7 +67,11 @@ export default function Upload() {
               style={styles.fileList}
             >
               {files.map((file, index) => (
-                <TouchableOpacity key={index} style={styles.fileCard}>
+                <TouchableOpacity
+                  key={index}
+                  style={styles.fileCard}
+                  onPress={handleFileSelect}
+                >
                   <Ionicons
                     name="document-text-outline"
                     size={32}
@@ -83,7 +82,10 @@ export default function Upload() {
               ))}
             </ScrollView>
 
-            <TouchableOpacity style={styles.managePermissions}>
+            <TouchableOpacity
+              style={styles.managePermissions}
+              onPress={() => setModalVisible(false)}
+            >
               <Text style={styles.manageText}>Manage file permissions</Text>
             </TouchableOpacity>
           </View>
@@ -139,31 +141,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "500",
   },
-  bottomNav: {
-    position: "absolute",
-    bottom: 0,
-    width: "100%",
-    height: 70,
-    backgroundColor: "#FFF",
-    borderTopWidth: 1,
-    borderTopColor: "#E5E7EB",
-    flexDirection: "row",
-    justifyContent: "space-around",
-    alignItems: "center",
-  },
-  navItem: {
-    alignItems: "center",
-  },
-  navText: {
-    marginTop: 4,
-    fontSize: 12,
-    color: "#6B7280",
-  },
-  navActive: {
-    color: "#4338CA",
-  },
-
-  // Modal styles
   modalBackground: {
     flex: 1,
     backgroundColor: "rgba(0,0,0,0.5)",
