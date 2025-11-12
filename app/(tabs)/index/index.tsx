@@ -1,8 +1,9 @@
 import { Ionicons } from "@expo/vector-icons";
-import { router } from "expo-router";
+import * as DocumentPicker from "expo-document-picker";
 import { useState } from "react";
 import {
   Modal,
+  Platform,
   ScrollView,
   StyleSheet,
   Text,
@@ -10,30 +11,99 @@ import {
   View,
 } from "react-native";
 
-export default function UploadScreen() {
+const BACKEND_URL =
+  Platform.OS === "android"
+    ? "http://10.0.2.2:5001"
+    : "http://localhost:5001";
+
+type FileItem = {
+  name: string;
+  uri: string;
+};
+
+type UploadResponse = {
+  message?: string;
+  error?: string;
+};
+
+export default function Upload() {
   const [modalVisible, setModalVisible] = useState(false);
+  const [files, setFiles] = useState<FileItem[]>([]);
+  const [msg, setMsg] = useState("");
+  
+  const pickAndUploadFile = async () => {
+    try {
+      const result = await DocumentPicker.getDocumentAsync({
+        type: "*/*",
+        copyToCacheDirectory: true,
+      });
+  
+      if (result.canceled) {
+        console.log("User canceled document picker");
+        return;
+      }
+  
+      const file = result.assets[0];
+      const { name, uri, mimeType } = file;
+  
+      setFiles((prev) => [...prev, { name, uri }]);
+      const formData = new FormData();
+      formData.append("file", {
+        uri: Platform.OS === "ios" ? uri.replace("file://", "") : uri,
+        name,
+        type: mimeType || "application/octet-stream",
+      } as any);
+  
+      const res = await fetch(`${BACKEND_URL}/upload`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+        body: formData,
+      });
+  
+      const data = await res.json();
+      setMsg(data.message || data.error || "No message returned");
 
-  const files = [
-    { name: "Walmart Contract 1-17-25.docx" },
-    { name: "Walmart Contract 3-22-24.pdf" },
-    { name: "Pacsun Contract 3-22-24.pdf" },
-  ];
-
-  const handleFileSelect = () => {
-    setModalVisible(false);
-    // Navigate to the analysis screen within this tab's stack
-    router.push("./analysis");
+      setTimeout(() => {
+        DocumentPicker.getDocumentAsync({ type: "*/*" });
+      }, 200);
+  
+    } catch (err) {
+      console.error(err);
+      setMsg("Upload failed");
+    }
   };
-
-  const handleTakePicture = () => {
-    // Navigate to the analysis screen
-    router.push("./analysis");
+  
+  const removeFile = async (index: number) => {
+    const fileToRemove = files[index];
+    try {
+      const res = await fetch(
+        `${BACKEND_URL}/upload/${encodeURIComponent(fileToRemove.name)}`,
+        {
+          method: "DELETE",
+        }
+      );
+      const data = await res.json();
+      setFiles((prev) => prev.filter((_, i) => i !== index));
+      if (res.ok) {
+        setMsg("✅ Successfully deleted");
+      } else {
+        setMsg(data.error || "❌ Failed to delete file");
+      }
+      setTimeout(() => setMsg(""), 2500);
+    } catch (err) {
+      console.error(err);
+      setMsg("❌ Failed to delete file");
+      setTimeout(() => setMsg(""), 2500);
+    }
   };
-
+  
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Analyze a contract</Text>
 
+      {/* Upload box */}
       <TouchableOpacity
         style={styles.uploadBox}
         onPress={() => setModalVisible(true)}
@@ -44,13 +114,31 @@ export default function UploadScreen() {
 
       <Text style={styles.orText}>or</Text>
 
-      <TouchableOpacity
-        style={styles.takePictureButton}
-        onPress={handleTakePicture}
-      >
+      <TouchableOpacity style={styles.takePictureButton}>
         <Text style={styles.takePictureText}>Take a picture</Text>
       </TouchableOpacity>
 
+      {msg ? <Text style={{ marginTop: 10 }}>{msg}</Text> : null}
+
+      {/* Bottom Navigation */}
+      <View style={styles.bottomNav}>
+        <TouchableOpacity style={styles.navItem}>
+          <Ionicons name="cloud-upload-outline" size={22} color="#4338CA" />
+          <Text style={[styles.navText, styles.navActive]}>Upload</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity style={styles.navItem}>
+          <Ionicons name="document-text-outline" size={22} color="#000" />
+          <Text style={styles.navText}>History</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity style={styles.navItem}>
+          <Ionicons name="settings-outline" size={22} color="#000" />
+          <Text style={styles.navText}>Settings</Text>
+        </TouchableOpacity>
+      </View>
+
+      {/* Upload Modal */}
       <Modal
         animationType="fade"
         transparent={true}
@@ -66,27 +154,31 @@ export default function UploadScreen() {
               showsHorizontalScrollIndicator={false}
               style={styles.fileList}
             >
-              {files.map((file, index) => (
-                <TouchableOpacity
-                  key={index}
-                  style={styles.fileCard}
-                  onPress={handleFileSelect}
-                >
-                  <Ionicons
-                    name="document-text-outline"
-                    size={32}
-                    color="#4B5563"
-                  />
-                  <Text style={styles.fileName}>{file.name}</Text>
-                </TouchableOpacity>
-              ))}
+      {files.map((file, index) => (
+        <View key={index} style={styles.fileCard}>
+          <Ionicons name="document-text-outline" size={32} color="#4B5563" />
+            <Text style={styles.fileName}>{file.name}</Text>
+              <TouchableOpacity
+                style={styles.removeButton}
+                onPress={() => removeFile(index)}
+              >
+          <Ionicons name="trash-outline" size={16} color="#DC2626" />
+              </TouchableOpacity>
+        </View>
+      ))}
             </ScrollView>
-
             <TouchableOpacity
               style={styles.managePermissions}
+              onPress={pickAndUploadFile}
+            >
+              <Text style={styles.manageText}>Select and Upload a file</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.backButton}
               onPress={() => setModalVisible(false)}
             >
-              <Text style={styles.manageText}>Manage file permissions</Text>
+              <Text style={styles.backButtonText}>Back</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -94,7 +186,6 @@ export default function UploadScreen() {
     </View>
   );
 }
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -103,12 +194,7 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     paddingTop: 80,
   },
-  title: {
-    fontSize: 24,
-    fontWeight: "600",
-    color: "#1F2937",
-    marginBottom: 40,
-  },
+  title: { fontSize: 24, fontWeight: "600", color: "#1F2937", marginBottom: 40 },
   uploadBox: {
     width: 280,
     height: 180,
@@ -120,27 +206,30 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  uploadText: {
-    marginTop: 12,
-    fontSize: 16,
-    color: "#6B7280",
-  },
-  orText: {
-    fontSize: 16,
-    color: "#6B7280",
-    marginVertical: 20,
-  },
+  uploadText: { marginTop: 12, fontSize: 16, color: "#6B7280" },
+  orText: { fontSize: 16, color: "#6B7280", marginVertical: 20 },
   takePictureButton: {
     backgroundColor: "#4338CA",
     paddingVertical: 10,
     paddingHorizontal: 24,
     borderRadius: 6,
   },
-  takePictureText: {
-    color: "#FFF",
-    fontSize: 16,
-    fontWeight: "500",
+  takePictureText: { color: "#FFF", fontSize: 16, fontWeight: "500" },
+  bottomNav: {
+    position: "absolute",
+    bottom: 0,
+    width: "100%",
+    height: 70,
+    backgroundColor: "#FFF",
+    borderTopWidth: 1,
+    borderTopColor: "#E5E7EB",
+    flexDirection: "row",
+    justifyContent: "space-around",
+    alignItems: "center",
   },
+  navItem: { alignItems: "center" },
+  navText: { marginTop: 4, fontSize: 12, color: "#6B7280" },
+  navActive: { color: "#4338CA" },
   modalBackground: {
     flex: 1,
     backgroundColor: "rgba(0,0,0,0.5)",
@@ -158,15 +247,8 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 5,
   },
-  modalTitle: {
-    fontSize: 18,
-    fontWeight: "600",
-    color: "#1F2937",
-    marginBottom: 16,
-  },
-  fileList: {
-    flexDirection: "row",
-  },
+  modalTitle: { fontSize: 18, fontWeight: "600", color: "#1F2937", marginBottom: 16 },
+  fileList: { flexDirection: "row" },
   fileCard: {
     width: 90,
     height: 110,
@@ -178,18 +260,29 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     marginRight: 10,
   },
-  fileName: {
-    fontSize: 11,
-    color: "#374151",
-    textAlign: "center",
-    marginTop: 6,
-  },
-  managePermissions: {
-    marginTop: 12,
-  },
-  manageText: {
-    fontSize: 13,
-    color: "#6B7280",
-    textAlign: "right",
-  },
+  fileName: { fontSize: 11, color: "#374151", textAlign: "center", marginTop: 6 },
+  managePermissions: { marginTop: 12 },
+  manageText: { fontSize: 13, color: "#6B7280", textAlign: "right" },
+    backButton: {
+      marginTop: 16,
+      backgroundColor: "#E5E7EB",
+      paddingVertical: 10,
+      borderRadius: 6,
+      alignItems: "center",
+    },
+    backButtonText: {
+      color: "#1F2937",
+      fontSize: 14,
+      fontWeight: "500",
+    },
+    removeButton: {
+      position: "absolute",
+      top: 6,
+      right: 6,
+      backgroundColor: "#FEE2E2",
+      borderRadius: 50,
+      padding: 4,
+    },    
 });
+
+
