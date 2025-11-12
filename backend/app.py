@@ -30,7 +30,10 @@ def upload_file():
         filename = secure_filename(file.filename)
         save_path = os.path.join(app.config["UPLOAD_FOLDER"], filename)
         file.save(save_path)
-        return jsonify({"message": f"{filename} uploaded successfully"})
+        return jsonify({
+            "message": f"{filename} uploaded successfully",
+            "savedFileName": filename  # <-- new
+    })
 
     return jsonify({"error": "File type not allowed"}), 400
 @app.route("/upload/<filename>", methods=["DELETE"])
@@ -47,3 +50,5 @@ def delete_file(filename):
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5001, debug=True)
+
+

@@ -11,10 +11,7 @@ import {
   View,
 } from "react-native";
 
-const BACKEND_URL =
-  Platform.OS === "android"
-    ? "http://10.0.2.2:5001"
-    : "http://localhost:5001";
+const BACKEND_URL = "http://10.0.0.6:5001";
 
 type FileItem = {
   name: string;
@@ -37,67 +34,83 @@ export default function Upload() {
         type: "*/*",
         copyToCacheDirectory: true,
       });
-  
-      if (result.canceled) {
-        console.log("User canceled document picker");
-        return;
-      }
-  
+
+      if (result.canceled) return;
+
       const file = result.assets[0];
       const { name, uri, mimeType } = file;
-  
-      setFiles((prev) => [...prev, { name, uri }]);
+
       const formData = new FormData();
       formData.append("file", {
         uri: Platform.OS === "ios" ? uri.replace("file://", "") : uri,
         name,
         type: mimeType || "application/octet-stream",
       } as any);
-  
+
+      // Upload
       const res = await fetch(`${BACKEND_URL}/upload`, {
         method: "POST",
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
         body: formData,
       });
-  
-      const data = await res.json();
-      setMsg(data.message || data.error || "No message returned");
 
-      setTimeout(() => {
-        DocumentPicker.getDocumentAsync({ type: "*/*" });
-      }, 200);
-  
-    } catch (err) {
-      console.error(err);
-      setMsg("Upload failed");
-    }
-  };
-  
-  const removeFile = async (index: number) => {
-    const fileToRemove = files[index];
-    try {
-      const res = await fetch(
-        `${BACKEND_URL}/upload/${encodeURIComponent(fileToRemove.name)}`,
-        {
-          method: "DELETE",
-        }
-      );
-      const data = await res.json();
-      setFiles((prev) => prev.filter((_, i) => i !== index));
-      if (res.ok) {
-        setMsg("✅ Successfully deleted");
+      const contentType = res.headers.get("content-type") || "";
+      let data: any;
+      if (contentType.includes("application/json")) {
+        data = await res.json();
       } else {
-        setMsg(data.error || "❌ Failed to delete file");
+        const text = await res.text();
+        console.warn("Server returned non-JSON:", text);
+        data = { error: "Server returned non-JSON response" };
       }
-      setTimeout(() => setMsg(""), 2500);
-    } catch (err) {
-      console.error(err);
-      setMsg("❌ Failed to delete file");
-      setTimeout(() => setMsg(""), 2500);
+
+    if (res.ok) {
+      const savedName = data.savedFileName || name;
+      setFiles((prev) => [...prev, { name: savedName, uri }]);
+      setMsg(data.message || "File uploaded successfully");
+        } else {
+          setMsg(data.error || "Upload failed");
+        }
+        setTimeout(() => setMsg(""), 2500);
+      } catch (err) {
+        console.error(err);
+        setMsg("❌ Upload failed");
+        setTimeout(() => setMsg(""), 2500);
+      }
+    };
+    const removeFile = async (index: number) => {
+    const fileToRemove = files[index];
+      try {
+        const res = await fetch(
+        `${BACKEND_URL}/upload/${encodeURIComponent(fileToRemove.name)}`,
+        { method: "DELETE" }
+    );
+
+
+    const contentType = res.headers.get("content-type") || "";
+    let data: any;
+    if (contentType.includes("application/json")) {
+      data = await res.json();
+    } else {
+      const text = await res.text();
+      console.warn("Server returned non-JSON:", text);
+      data = { error: "Server returned non-JSON response" };
     }
-  };
+
+    if (res.ok) {
+      setFiles((prev) => prev.filter((_, i) => i !== index));
+      setMsg("✅ Successfully deleted");
+    } else {
+      setMsg(data.error || "❌ Failed to delete file");
+    }
+    setTimeout(() => setMsg(""), 2500);
+
+  } catch (err) {
+    console.error(err);
+    setMsg("❌ Failed to delete file");
+    setTimeout(() => setMsg(""), 2500);
+  }
+};
+
   
   return (
     <View style={styles.container}>
