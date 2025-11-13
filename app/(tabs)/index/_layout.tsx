@@ -1,26 +1,14 @@
 import { Stack } from "expo-router";
 
-export default function UploadStack() {
+export default function HomeStack() {
   return (
     <Stack
       screenOptions={{
-        headerShown: true,
+        headerShown: false,
       }}
     >
-      <Stack.Screen
-        name="index"
-        options={{
-          headerShown: false, // Hide header on upload screen
-          title: "Upload",
-        }}
-      />
-      <Stack.Screen
-        name="analysis"
-        options={{
-          title: "Analysis",
-          headerBackTitle: "Back",
-        }}
-      />
+      <Stack.Screen name="index" options={{ title: "Upload" }} />
+      <Stack.Screen name="analysis" options={{ title: "Analysis" }} />
     </Stack>
   );
 }
