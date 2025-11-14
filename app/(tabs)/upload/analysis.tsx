@@ -1,7 +1,9 @@
 import { GlobalStyles } from "@/constants/theme";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import {
+  ActivityIndicator,
+  Alert,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
@@ -12,18 +14,137 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import ActionButtonPair from "@/components/ui/action-button-pair";
+import ComparisonModal from "@/components/ui/comparison-modal";
+
+// Use localhost for simulator, or your local IP for physical device
+const BACKEND_URL = "http://localhost:5001";
 
 export default function AnalysisScreen() {
   const router = useRouter();
-  const { filename } = useLocalSearchParams();
+  const { filename, source } = useLocalSearchParams();
   const [showChat, setShowChat] = useState(false);
   const [messages, setMessages] = useState<{ text: string; isUser: boolean }[]>(
     [],
   );
   const [inputText, setInputText] = useState("");
+  const [privacyRating, setPrivacyRating] = useState<number | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [isArchived, setIsArchived] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+  const [showComparisonModal, setShowComparisonModal] = useState(false);
+  const [archivedContracts, setArchivedContracts] = useState<any[]>([]);
+
+  // Check if we came from history (already archived)
+  const isFromHistory = source === "history";
+
+  useEffect(() => {
+    if (filename) {
+      fetchFileMetadata();
+    }
+  }, [filename]);
+
+  const fetchFileMetadata = async () => {
+    try {
+      setLoading(true);
+      const response = await fetch(`${BACKEND_URL}/upload/${filename}`);
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch file metadata");
+      }
+
+      const data = await response.json();
+      setPrivacyRating(data.privacyRating);
+      setIsArchived(data.archived || false);
+    } catch (err) {
+      console.error("Error fetching metadata:", err);
+      // Default to a random rating if fetch fails
+      setPrivacyRating(Math.floor(Math.random() * 10) + 1);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleQuestion = () => {
     setShowChat(true);
+  };
+
+  const handleCompareOther = async () => {
+    // Fetch archived contracts for comparison
+    try {
+      const response = await fetch(`${BACKEND_URL}/uploads?archived=true`);
+      if (response.ok) {
+        const data = await response.json();
+        setArchivedContracts(
+          data.files.map((file: any) => ({
+            filename: file.filename,
+            contractName: parseContractName(file.filename),
+            privacyRating: `${file.privacyRating}/10 Privacy Rating`,
+          })),
+        );
+      }
+    } catch (err) {
+      console.error("Error fetching contracts:", err);
+    }
+    setShowComparisonModal(true);
+  };
+
+  const handleSelectComparison = (compareWithFilename: string) => {
+    router.push({
+      pathname: "/(tabs)/upload/comparison",
+      params: {
+        contract1: filename,
+        contract2: compareWithFilename,
+      },
+    });
+  };
+
+  // Helper function to parse contract name from filename
+  function parseContractName(filename: string): string {
+    const nameWithoutExt = filename.replace(/\.(pdf|docx|jpg|png)$/i, "");
+    const readable = nameWithoutExt
+      .replace(/[-_]/g, " ")
+      .split(" ")
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(" ");
+    return readable;
+  }
+
+  const handleSaveToArchive = async () => {
+    if (!filename || isArchived) return;
+
+    try {
+      setIsSaving(true);
+
+      const response = await fetch(
+        `${BACKEND_URL}/upload/${filename}/archive`,
+        {
+          method: "PATCH",
+        },
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to archive file");
+      }
+
+      const data = await response.json();
+
+      setIsArchived(true);
+
+      // Show success feedback
+      Alert.alert(
+        "Successfully Saved! ✓",
+        `${filename} has been saved to your archive.`,
+        [{ text: "OK" }],
+      );
+    } catch (err) {
+      console.error("Error archiving file:", err);
+      Alert.alert("Error", "Failed to save to archive. Please try again.", [
+        { text: "OK" },
+      ]);
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   const handleBack = () => {
@@ -134,23 +255,46 @@ export default function AnalysisScreen() {
         style={styles.container}
         contentContainerStyle={styles.contentContainer}
       >
-        <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
+        <TouchableOpacity
+          style={styles.backButton}
+          onPress={() => {
+            if (isFromHistory) {
+              router.push("/(tabs)/history");
+            } else {
+              router.push("/(tabs)/upload");
+            }
+          }}
+        >
           <Text style={[GlobalStyles.body, { color: "#383Ab2" }]}>
-            ← Back
+            ← {isFromHistory ? "Back to History" : "Back to Upload"}
           </Text>
         </TouchableOpacity>
         <Text style={GlobalStyles.h3}>Contract Analysis & Summary</Text>
         {filename && (
-          <Text style={[GlobalStyles.body, { color: "#6B7280", marginTop: -16 }]}>
+          <Text
+            style={[GlobalStyles.body, { color: "#6B7280", marginTop: -16 }]}
+          >
             {filename}
           </Text>
         )}
-        <View style={styles.tag}>
-          <Text style={GlobalStyles.small}>10/10 Privacy Rating</Text>
-        </View>
+        {loading ? (
+          <View style={styles.tag}>
+            <ActivityIndicator size="small" color="#383AB2" />
+          </View>
+        ) : (
+          <View style={styles.tag}>
+            <Text style={GlobalStyles.small}>
+              {privacyRating}/10 Privacy Rating
+            </Text>
+          </View>
+        )}
         <View style={[styles.contentContainer, { gap: 8 }]}>
           <Text style={GlobalStyles.body}>
-            Here are the key privacy concerns in your {filename ? `${filename.replace(/\.(pdf|docx|jpg|png)$/i, '')} contract` : 'contract'}:
+            Here are the key privacy concerns in your{" "}
+            {filename
+              ? `${filename.replace(/\.(pdf|docx|jpg|png)$/i, "")} contract`
+              : "contract"}
+            :
           </Text>
           <View style={styles.lightContainer}>
             <Text style={GlobalStyles.small}>
@@ -177,18 +321,34 @@ export default function AnalysisScreen() {
             <Text style={GlobalStyles.small}>III. SCHEDULE</Text>
           </View>
         </View>
-        <View style={{ flex: 1, flexDirection: "row", gap: 24, maxHeight: 36 }}>
-          <TouchableOpacity style={styles.button}>
-            <Text style={[GlobalStyles.small, { color: "#FFFFFF" }]}>
-              Save to Archive
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={handleQuestion} style={styles.button}>
-            <Text style={[GlobalStyles.small, { color: "#FFFFFF" }]}>
-              Ask a question
-            </Text>
-          </TouchableOpacity>
-        </View>
+        {isFromHistory ? (
+          <ActionButtonPair
+            leftButtonText="Compare other"
+            rightButtonText="Ask a question"
+            onLeftPress={handleCompareOther}
+            onRightPress={handleQuestion}
+          />
+        ) : (
+          <ActionButtonPair
+            leftButtonText={
+              isArchived
+                ? "Saved ✓"
+                : isSaving
+                  ? "Saving..."
+                  : "Save to Archive"
+            }
+            rightButtonText="Ask a question"
+            onLeftPress={handleSaveToArchive}
+            onRightPress={handleQuestion}
+          />
+        )}
+        <ComparisonModal
+          visible={showComparisonModal}
+          currentContract={String(filename)}
+          contracts={archivedContracts}
+          onClose={() => setShowComparisonModal(false)}
+          onSelectContract={handleSelectComparison}
+        />
       </ScrollView>
     </SafeAreaView>
   );

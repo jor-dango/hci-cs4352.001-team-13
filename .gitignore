@@ -44,6 +44,7 @@ app-example
 
 # backend
 backend/uploads/
+backend/metadata.json
 
 # AI assistant context
 CLAUDE.md

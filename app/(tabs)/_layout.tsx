@@ -4,6 +4,7 @@ import { DynamicColorIOS } from "react-native";
 export default function TabLayout() {
   return (
     <NativeTabs
+      initialRouteName="upload"
       labelStyle={{
         default: {
           color: DynamicColorIOS({
@@ -23,7 +24,7 @@ export default function TabLayout() {
         light: "#383AB2",
       })}
     >
-      <NativeTabs.Trigger name="index">
+      <NativeTabs.Trigger name="upload">
         <Icon
           sf={{
             default: "square.and.arrow.up",

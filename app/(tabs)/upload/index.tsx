@@ -73,8 +73,8 @@ export default function Upload() {
         // Hide modal and navigate to analysis page with filename
         setModalVisible(false);
         router.push({
-          pathname: "./analysis",
-          params: { filename: savedName }
+          pathname: "/(tabs)/upload/analysis",
+          params: { filename: savedName },
         });
       } else {
         setMsg(data.error || "Upload failed");
@@ -180,8 +180,8 @@ export default function Upload() {
                   onPress={() => {
                     setModalVisible(false);
                     router.push({
-                      pathname: "./analysis",
-                      params: { filename: file.name }
+                      pathname: "/(tabs)/upload/analysis",
+                      params: { filename: file.name },
                     });
                   }}
                 >
@@ -215,13 +215,6 @@ export default function Upload() {
               onPress={() => setModalVisible(false)}
             >
               <Text style={styles.backButtonText}>Back</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={styles.backButton}
-              onPress={() => router.navigate("./analysis")}
-            >
-              <Text style={styles.backButtonText}>Test Next Page</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -320,7 +313,7 @@ const styles = StyleSheet.create({
     marginTop: 6,
   },
   managePermissions: { marginTop: 12 },
-  manageText: { fontSize: 13, color: "#6B7280", textAlign: "right" },
+  manageText: { fontSize: 13, color: "#6B7280", textAlign: "left" },
   backButton: {
     marginTop: 16,
     backgroundColor: "#E5E7EB",
