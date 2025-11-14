@@ -14,11 +14,13 @@ A React Native mobile application for analyzing contracts with a focus on privac
 ### Frontend Setup
 
 1. **Install dependencies:**
+
    ```bash
    npm install
    ```
 
 2. **Start the development server:**
+
    ```bash
    npm start
    ```
@@ -33,16 +35,19 @@ A React Native mobile application for analyzing contracts with a focus on privac
 The Flask backend API must be running for file upload and analysis features to work.
 
 1. **Navigate to backend directory:**
+
    ```bash
    cd backend
    ```
 
 2. **Install Python dependencies:**
+
    ```bash
    pip install -r requirements.txt
    ```
 
 3. **Start the Flask server:**
+
    ```bash
    python app.py
    ```
@@ -60,6 +65,7 @@ The Flask backend API must be running for file upload and analysis features to w
 ## 📱 Tech Stack
 
 ### Frontend
+
 - **React Native** 0.81.5
 - **Expo** 54
 - **TypeScript** (strict mode)
@@ -67,6 +73,7 @@ The Flask backend API must be running for file upload and analysis features to w
 - **expo-linear-gradient** (for UI gradients)
 
 ### Backend
+
 - **Flask** (Python)
 - **Port**: 5001
 - **CORS**: Enabled for cross-origin requests
@@ -105,6 +112,7 @@ backend/
 ## 🎨 Design System
 
 ### Colors
+
 - **Primary Brand**: `#383AB2`
 - **Background**: `#EDEDF0`
 - **Borders**: `#BEBEBE`
@@ -112,11 +120,13 @@ backend/
 - **Secondary Text**: `#6B7280`
 
 ### Typography (GlobalStyles)
+
 - **h3**: 36px serif (headings)
 - **body**: 16px sans (body text)
 - **small**: 14px sans (secondary text)
 
 ### Spacing
+
 - **Gap between sections**: 24px
 - **Padding**: 24px horizontal, 16px top
 - **Bottom padding**: 80px (for scroll gradients)
@@ -124,6 +134,7 @@ backend/
 ## 🔑 Key Features
 
 ### ✅ Implemented
+
 - File upload (PDF, DOCX, JPG, PNG)
 - Contract analysis display
 - Privacy rating system
@@ -136,6 +147,7 @@ backend/
 - Proper navigation stack management
 
 ### 🚧 To Be Implemented
+
 - Settings screen content
 - Camera-based document capture
 - Real AI integration (currently mocked)
@@ -145,16 +157,19 @@ backend/
 ## 📝 Development Notes
 
 ### Navigation
+
 - Uses standard `Tabs` from `expo-router` (not NativeTabs)
 - Upload tab contains a nested stack (index → analysis → comparison)
 - History navigation properly clears upload stack to prevent confusion
 - All screens use `edges={['top']}` on SafeAreaView to avoid bottom padding
 
 ### State Management
+
 - Local state with React hooks
 - No global state management (consider adding Redux/Zustand if needed)
 
 ### API Integration
+
 - Backend endpoints:
   - `POST /upload` - Upload contract file
   - `GET /upload/:filename` - Get file metadata
@@ -163,6 +178,7 @@ backend/
   - `GET /uploads?archived=true` - List archived contracts
 
 ### File Upload Flow
+
 1. User selects file via modal
 2. File uploaded to backend with FormData
 3. Navigate to analysis screen with filename param
@@ -182,21 +198,25 @@ npx tsc --noEmit
 ## 🐛 Troubleshooting
 
 ### App shows "Unmatched Route"
+
 - Make sure all navigation changes are saved
 - Clear Metro bundler cache: `npm start --clear`
 - Reload app: shake device → "Reload"
 
 ### Backend connection fails
+
 - Ensure Flask server is running on port 5001
 - Check `BACKEND_URL` matches your network IP
 - Verify CORS is enabled in `backend/app.py`
 - Check firewall settings
 
 ### Gradient not visible
+
 - Run `npm install` to ensure expo-linear-gradient is installed
 - Reload the app after installation
 
 ### iOS/Android build issues
+
 - Delete `node_modules` and reinstall: `rm -rf node_modules && npm install`
 - Clear Expo cache: `expo start -c`
 
@@ -207,10 +227,11 @@ npx tsc --noEmit
 1. Pull latest changes: `git pull origin main`
 2. Install dependencies: `npm install`
 3. Start both frontend and backend servers
-4. Check `CLAUDE.md` for AI assistant guidance
 
 ### Settings Screen TODO
+
 The settings screen (`app/(tabs)/settings.tsx`) is currently a placeholder. Suggested features:
+
 - User preferences
 - Notification settings
 - Data & storage management

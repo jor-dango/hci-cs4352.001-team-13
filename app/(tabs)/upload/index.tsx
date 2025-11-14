@@ -125,88 +125,108 @@ export default function Upload() {
       <View style={styles.container}>
         <Text style={GlobalStyles.h3}>Analyze a contract</Text>
 
-      {/* Upload box */}
-      <TouchableOpacity
-        style={styles.uploadBox}
-        onPress={() => setModalVisible(true)}
-        activeOpacity={0.7}
-      >
-        <Ionicons name="cloud-upload-outline" size={48} color="#9CA3AF" />
-        <Text style={[GlobalStyles.body, { color: "#6B7280" }]}>Upload a contract</Text>
-      </TouchableOpacity>
+        {/* Upload box */}
+        <TouchableOpacity
+          style={styles.uploadBox}
+          onPress={() => setModalVisible(true)}
+          activeOpacity={0.7}
+        >
+          <Ionicons name="cloud-upload-outline" size={48} color="#9CA3AF" />
+          <Text style={[GlobalStyles.body, { color: "#6B7280" }]}>
+            Upload a contract
+          </Text>
+        </TouchableOpacity>
 
-      <Text style={[GlobalStyles.body, { color: "#6B7280", marginVertical: 20 }]}>or</Text>
+        <Text
+          style={[GlobalStyles.body, { color: "#6B7280", marginVertical: 20 }]}
+        >
+          or
+        </Text>
 
-      <TouchableOpacity style={styles.takePictureButton} activeOpacity={0.7}>
-        <Text style={[GlobalStyles.body, { color: "#FFF", fontWeight: "500" }]}>Take a picture</Text>
-      </TouchableOpacity>
+        <TouchableOpacity style={styles.takePictureButton} activeOpacity={0.7}>
+          <Text
+            style={[GlobalStyles.body, { color: "#FFF", fontWeight: "500" }]}
+          >
+            Take a picture
+          </Text>
+        </TouchableOpacity>
 
-      {msg ? <Text style={[GlobalStyles.small, { marginTop: 16, color: "#6B7280" }]}>{msg}</Text> : null}
+        {msg ? (
+          <Text
+            style={[GlobalStyles.small, { marginTop: 16, color: "#6B7280" }]}
+          >
+            {msg}
+          </Text>
+        ) : null}
 
-      {/* Upload Modal */}
-      <Modal
-        animationType="fade"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => setModalVisible(false)}
-      >
-        <View style={styles.modalBackground}>
-          <View style={styles.modalContainer}>
-            <Text style={styles.modalTitle}>Upload a file</Text>
+        {/* Upload Modal */}
+        <Modal
+          animationType="fade"
+          transparent={true}
+          visible={modalVisible}
+          onRequestClose={() => setModalVisible(false)}
+        >
+          <View style={styles.modalBackground}>
+            <View style={styles.modalContainer}>
+              <Text style={styles.modalTitle}>Upload a file</Text>
 
-            <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              style={styles.fileList}
-            >
-              {files.map((file, index) => (
-                <TouchableOpacity
-                  key={index}
-                  style={styles.fileCard}
-                  onPress={() => {
-                    setModalVisible(false);
-                    router.push({
-                      pathname: "/(tabs)/upload/analysis",
-                      params: { filename: file.name },
-                    });
-                  }}
-                >
-                  <Ionicons
-                    name="document-text-outline"
-                    size={32}
-                    color="#4B5563"
-                  />
-                  <Text style={styles.fileName}>{file.name}</Text>
+              <ScrollView
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                style={styles.fileList}
+              >
+                {files.map((file, index) => (
                   <TouchableOpacity
-                    style={styles.removeButton}
-                    onPress={(e) => {
-                      e.stopPropagation();
-                      removeFile(index);
+                    key={index}
+                    style={styles.fileCard}
+                    onPress={() => {
+                      setModalVisible(false);
+                      router.push({
+                        pathname: "/(tabs)/upload/analysis",
+                        params: { filename: file.name },
+                      });
                     }}
                   >
-                    <Ionicons name="trash-outline" size={16} color="#DC2626" />
+                    <Ionicons
+                      name="document-text-outline"
+                      size={32}
+                      color="#4B5563"
+                    />
+                    <Text style={styles.fileName}>{file.name}</Text>
+                    <TouchableOpacity
+                      style={styles.removeButton}
+                      onPress={(e) => {
+                        e.stopPropagation();
+                        removeFile(index);
+                      }}
+                    >
+                      <Ionicons
+                        name="trash-outline"
+                        size={16}
+                        color="#DC2626"
+                      />
+                    </TouchableOpacity>
                   </TouchableOpacity>
-                </TouchableOpacity>
-              ))}
-            </ScrollView>
-            <TouchableOpacity
-              style={styles.managePermissions}
-              onPress={pickAndUploadFile}
-              activeOpacity={0.7}
-            >
-              <Text style={styles.manageText}>Upload a file</Text>
-            </TouchableOpacity>
+                ))}
+              </ScrollView>
+              <TouchableOpacity
+                style={styles.managePermissions}
+                onPress={pickAndUploadFile}
+                activeOpacity={0.7}
+              >
+                <Text style={styles.manageText}>Upload a file</Text>
+              </TouchableOpacity>
 
-            <TouchableOpacity
-              style={styles.backButton}
-              onPress={() => setModalVisible(false)}
-              activeOpacity={0.7}
-            >
-              <Text style={styles.backButtonText}>Back</Text>
-            </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.backButton}
+                onPress={() => setModalVisible(false)}
+                activeOpacity={0.7}
+              >
+                <Text style={styles.backButtonText}>Back</Text>
+              </TouchableOpacity>
+            </View>
           </View>
-        </View>
-      </Modal>
+        </Modal>
       </View>
     </SafeAreaView>
   );
@@ -235,7 +255,8 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFFFFF",
     alignItems: "center",
     justifyContent: "center",
-    marginBottom: 24,
+    marginBottom: 2,
+    marginTop: 24,
   },
   takePictureButton: {
     backgroundColor: "#383AB2",
@@ -285,7 +306,12 @@ const styles = StyleSheet.create({
     marginTop: 6,
   },
   managePermissions: { marginTop: 16 },
-  manageText: { fontSize: 14, color: "#383AB2", textAlign: "left", fontWeight: "500" },
+  manageText: {
+    fontSize: 14,
+    color: "#383AB2",
+    textAlign: "left",
+    fontWeight: "500",
+  },
   backButton: {
     marginTop: 16,
     backgroundColor: "#FFFFFF",
