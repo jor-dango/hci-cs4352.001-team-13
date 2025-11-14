@@ -23,7 +23,10 @@ const BACKEND_URL = "http://localhost:5001";
 
 export default function AnalysisScreen() {
   const router = useRouter();
-  const { filename, source } = useLocalSearchParams();
+  const params = useLocalSearchParams();
+  // Ensure filename is a string, not an array
+  const filename = Array.isArray(params.filename) ? params.filename[0] : params.filename;
+  const source = Array.isArray(params.source) ? params.source[0] : params.source;
   const [showChat, setShowChat] = useState(false);
   const [messages, setMessages] = useState<{ text: string; isUser: boolean }[]>(
     [],

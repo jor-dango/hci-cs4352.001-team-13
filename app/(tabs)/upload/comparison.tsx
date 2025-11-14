@@ -23,7 +23,10 @@ interface ContractMetadata {
 
 export default function ComparisonScreen() {
   const router = useRouter();
-  const { contract1, contract2 } = useLocalSearchParams();
+  const params = useLocalSearchParams();
+  // Ensure contract params are strings, not arrays
+  const contract1 = Array.isArray(params.contract1) ? params.contract1[0] : params.contract1;
+  const contract2 = Array.isArray(params.contract2) ? params.contract2[0] : params.contract2;
   const [contract1Data, setContract1Data] = useState<ContractMetadata | null>(
     null,
   );
