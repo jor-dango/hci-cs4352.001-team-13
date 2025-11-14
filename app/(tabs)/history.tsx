@@ -6,6 +6,7 @@ import ComparisonModal from "@/components/ui/comparison-modal";
 import { useRouter } from "expo-router";
 import { useState, useCallback } from "react";
 import { useFocusEffect } from "@react-navigation/native";
+import { LinearGradient } from "expo-linear-gradient";
 
 // Use localhost for simulator, or your local IP for physical device
 const BACKEND_URL = "http://localhost:5001";
@@ -142,7 +143,7 @@ export default function HistoryScreen() {
   }
 
   return (
-    <SafeAreaView style={styles.safeContainer}>
+    <SafeAreaView style={styles.safeContainer} edges={['top']}>
       <ScrollView
         style={styles.container}
         contentContainerStyle={styles.contentContainer}
@@ -177,6 +178,12 @@ export default function HistoryScreen() {
           onSelectContract={handleSelectComparison}
         />
       </ScrollView>
+      <LinearGradient
+        colors={["rgba(237, 237, 240, 0)", "rgba(237, 237, 240, 0.8)", "#EDEDF0"]}
+        locations={[0, 0.5, 1]}
+        style={styles.scrollGradient}
+        pointerEvents="none"
+      />
     </SafeAreaView>
   );
 }
@@ -184,6 +191,7 @@ export default function HistoryScreen() {
 const styles = StyleSheet.create({
   safeContainer: {
     flex: 1,
+    backgroundColor: "#EDEDF0",
   },
   container: {
     backgroundColor: "#EDEDF0",
@@ -193,10 +201,9 @@ const styles = StyleSheet.create({
     paddingRight: 24,
   },
   contentContainer: {
-    display: "flex",
     flexDirection: "column",
     gap: 24,
-    paddingBottom: 24,
+    paddingBottom: 80,
   },
   emptyState: {
     flex: 1,
@@ -210,5 +217,12 @@ const styles = StyleSheet.create({
   centerContent: {
     justifyContent: "center",
     alignItems: "center",
+  },
+  scrollGradient: {
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    right: 0,
+    height: 75,
   },
 });

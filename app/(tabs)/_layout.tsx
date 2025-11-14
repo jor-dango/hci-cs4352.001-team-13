@@ -1,63 +1,70 @@
-import { Icon, Label, NativeTabs } from "expo-router/unstable-native-tabs";
-import { DynamicColorIOS } from "react-native";
+import { Tabs } from "expo-router";
+import { useColorScheme } from "@/hooks/use-color-scheme";
+import Ionicons from "@expo/vector-icons/Ionicons";
 
 export default function TabLayout() {
+  const colorScheme = useColorScheme();
+  const isDark = colorScheme === "dark";
+
   return (
-    <NativeTabs
-      initialRouteName="upload"
-      labelStyle={{
-        default: {
-          color: DynamicColorIOS({
-            dark: "#9CA3AF",
-            light: "#6B7280",
-          }),
-        },
-        selected: {
-          color: DynamicColorIOS({
-            dark: "#383AB2",
-            light: "#383AB2",
-          }),
+    <Tabs
+      screenOptions={{
+        tabBarActiveTintColor: "#383AB2",
+        tabBarInactiveTintColor: isDark ? "#9CA3AF" : "#6B7280",
+        headerShown: false,
+        tabBarStyle: {
+          backgroundColor: isDark ? "#1F2937" : "#FFFFFF",
         },
       }}
-      tintColor={DynamicColorIOS({
-        dark: "#383AB2",
-        light: "#383AB2",
-      })}
     >
-      <NativeTabs.Trigger name="upload">
-        <Icon
-          sf={{
-            default: "square.and.arrow.up",
-            selected: "square.and.arrow.up.fill",
-          }}
-          drawable="custom_android_drawable"
-        />
-        <Label>Upload</Label>
-      </NativeTabs.Trigger>
+      <Tabs.Screen
+        name="index"
+        options={{
+          href: null, // Hide from tab bar
+        }}
+      />
 
-      {/* Hide analysis and chat from tab bar */}
+      <Tabs.Screen
+        name="upload"
+        options={{
+          title: "Upload",
+          tabBarIcon: ({ color, focused }) => (
+            <Ionicons
+              name={focused ? "cloud-upload" : "cloud-upload-outline"}
+              size={28}
+              color={color}
+            />
+          ),
+        }}
+      />
 
-      <NativeTabs.Trigger name="history">
-        <Icon
-          sf={{
-            default: "text.book.closed",
-            selected: "text.book.closed.fill",
-          }}
-          drawable="custom_android_drawable"
-        />
-        <Label>History</Label>
-      </NativeTabs.Trigger>
+      <Tabs.Screen
+        name="history"
+        options={{
+          title: "History",
+          tabBarIcon: ({ color, focused }) => (
+            <Ionicons
+              name={focused ? "book" : "book-outline"}
+              size={28}
+              color={color}
+            />
+          ),
+        }}
+      />
 
-      <NativeTabs.Trigger name="settings">
-        <Icon
-          sf={{
-            default: "gearshape",
-            selected: "gearshape.fill",
-          }}
-          drawable="custom_settings_drawable"
-        />
-        <Label>Settings</Label>
-      </NativeTabs.Trigger>
-    </NativeTabs>
+      <Tabs.Screen
+        name="settings"
+        options={{
+          title: "Settings",
+          tabBarIcon: ({ color, focused }) => (
+            <Ionicons
+              name={focused ? "settings" : "settings-outline"}
+              size={28}
+              color={color}
+            />
+          ),
+        }}
+      />
+    </Tabs>
   );
 }

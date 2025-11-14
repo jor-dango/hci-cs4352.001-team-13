@@ -10,6 +10,7 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { LinearGradient } from "expo-linear-gradient";
 
 // Use localhost for simulator, or your local IP for physical device
 const BACKEND_URL = "http://localhost:5001";
@@ -101,7 +102,7 @@ export default function ComparisonScreen() {
   const betterContract = getBetterContract();
 
   return (
-    <SafeAreaView style={styles.safeContainer}>
+    <SafeAreaView style={styles.safeContainer} edges={['top']}>
       <ScrollView
         style={styles.container}
         contentContainerStyle={styles.contentContainer}
@@ -109,8 +110,9 @@ export default function ComparisonScreen() {
         <TouchableOpacity
           style={styles.backButton}
           onPress={() => router.back()}
+          activeOpacity={0.7}
         >
-          <Text style={[GlobalStyles.body, { color: "#383Ab2" }]}>← Back</Text>
+          <Text style={[GlobalStyles.body, { color: "#383AB2" }]}>← Back</Text>
         </TouchableOpacity>
 
         <Text style={GlobalStyles.h3}>Contract Comparison</Text>
@@ -251,6 +253,12 @@ export default function ComparisonScreen() {
           </View>
         </View>
       </ScrollView>
+      <LinearGradient
+        colors={["rgba(237, 237, 240, 0)", "rgba(237, 237, 240, 0.8)", "#EDEDF0"]}
+        locations={[0, 0.5, 1]}
+        style={styles.scrollGradient}
+        pointerEvents="none"
+      />
     </SafeAreaView>
   );
 }
@@ -258,6 +266,7 @@ export default function ComparisonScreen() {
 const styles = StyleSheet.create({
   safeContainer: {
     flex: 1,
+    backgroundColor: "#EDEDF0",
   },
   container: {
     backgroundColor: "#EDEDF0",
@@ -267,10 +276,9 @@ const styles = StyleSheet.create({
     paddingRight: 24,
   },
   contentContainer: {
-    display: "flex",
     flexDirection: "column",
     gap: 24,
-    paddingBottom: 24,
+    paddingBottom: 80,
   },
   backButton: {
     marginBottom: 8,
@@ -326,5 +334,12 @@ const styles = StyleSheet.create({
     borderColor: "#BEBEBE",
     borderWidth: 1,
     borderRadius: 8,
+  },
+  scrollGradient: {
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    right: 0,
+    height: 75,
   },
 });

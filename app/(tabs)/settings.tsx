@@ -1,34 +1,29 @@
 import { View, StyleSheet, Text } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { GlobalStyles } from "@/constants/theme";
 
 export default function SettingsScreen() {
   return (
-    <View style={styles.container}>
-      <Text style={{ color: "black" }}>This is the Settings screen!</Text>
-    </View>
+    <SafeAreaView style={styles.safeContainer} edges={['top']}>
+      <View style={styles.container}>
+        <Text style={GlobalStyles.h3}>Settings</Text>
+
+        {/* TODO: Add settings content here */}
+      </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  safeContainer: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
+    backgroundColor: "#EDEDF0",
   },
-
-  // titleContainer: {
-  //   flexDirection: "row",
-  //   alignItems: "center",
-  //   gap: 8,
-  // },
-  // stepContainer: {
-  //   gap: 8,
-  //   marginBottom: 8,
-  // },
-  // reactLogo: {
-  //   height: 178,
-  //   width: 290,
-  //   bottom: 0,
-  //   left: 0,
-  //   position: "absolute",
-  // },
+  container: {
+    backgroundColor: "#EDEDF0",
+    flex: 1,
+    paddingTop: 16,
+    paddingLeft: 24,
+    paddingRight: 24,
+  },
 });

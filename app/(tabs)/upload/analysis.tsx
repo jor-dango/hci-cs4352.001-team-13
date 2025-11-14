@@ -16,6 +16,7 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import ActionButtonPair from "@/components/ui/action-button-pair";
 import ComparisonModal from "@/components/ui/comparison-modal";
+import { LinearGradient } from "expo-linear-gradient";
 
 // Use localhost for simulator, or your local IP for physical device
 const BACKEND_URL = "http://localhost:5001";
@@ -178,7 +179,11 @@ export default function AnalysisScreen() {
         keyboardVerticalOffset={100}
       >
         <SafeAreaView style={styles.chatHeader}>
-          <TouchableOpacity onPress={handleBack} style={styles.backButton}>
+          <TouchableOpacity
+            onPress={handleBack}
+            style={styles.backButton}
+            activeOpacity={0.7}
+          >
             <Text style={[GlobalStyles.body, { color: "#383AB2" }]}>
               ← Back
             </Text>
@@ -250,7 +255,7 @@ export default function AnalysisScreen() {
 
   // Analysis View (original content)
   return (
-    <SafeAreaView style={styles.safeContainer}>
+    <SafeAreaView style={styles.safeContainer} edges={['top']}>
       <ScrollView
         style={styles.container}
         contentContainerStyle={styles.contentContainer}
@@ -259,13 +264,16 @@ export default function AnalysisScreen() {
           style={styles.backButton}
           onPress={() => {
             if (isFromHistory) {
-              router.push("/(tabs)/history");
+              // Clear the upload stack and go to history
+              router.dismissAll();
+              router.replace("/(tabs)/history");
             } else {
-              router.push("/(tabs)/upload");
+              router.back();
             }
           }}
+          activeOpacity={0.7}
         >
-          <Text style={[GlobalStyles.body, { color: "#383Ab2" }]}>
+          <Text style={[GlobalStyles.body, { color: "#383AB2" }]}>
             ← {isFromHistory ? "Back to History" : "Back to Upload"}
           </Text>
         </TouchableOpacity>
@@ -288,7 +296,7 @@ export default function AnalysisScreen() {
             </Text>
           </View>
         )}
-        <View style={[styles.contentContainer, { gap: 8 }]}>
+        <View style={styles.section}>
           <Text style={GlobalStyles.body}>
             Here are the key privacy concerns in your{" "}
             {filename
@@ -309,7 +317,7 @@ export default function AnalysisScreen() {
             </Text>
           </View>
         </View>
-        <View style={[styles.contentContainer, { gap: 8 }]}>
+        <View style={styles.section}>
           <Text style={GlobalStyles.body}>Other sections and concerns:</Text>
           <View style={styles.lightContainer}>
             <Text style={GlobalStyles.small}>I. TERMS</Text>
@@ -350,6 +358,12 @@ export default function AnalysisScreen() {
           onSelectContract={handleSelectComparison}
         />
       </ScrollView>
+      <LinearGradient
+        colors={["rgba(237, 237, 240, 0)", "rgba(237, 237, 240, 0.8)", "#EDEDF0"]}
+        locations={[0, 0.5, 1]}
+        style={styles.scrollGradient}
+        pointerEvents="none"
+      />
     </SafeAreaView>
   );
 }
@@ -357,6 +371,7 @@ export default function AnalysisScreen() {
 const styles = StyleSheet.create({
   safeContainer: {
     flex: 1,
+    backgroundColor: "#EDEDF0",
   },
   container: {
     backgroundColor: "#EDEDF0",
@@ -366,10 +381,12 @@ const styles = StyleSheet.create({
     paddingRight: 24,
   },
   contentContainer: {
-    display: "flex",
-    flex: 1,
     flexDirection: "column",
     gap: 24,
+    paddingBottom: 80,
+  },
+  section: {
+    gap: 8,
   },
   tag: {
     borderColor: "#BEBEBE",
@@ -467,5 +484,12 @@ const styles = StyleSheet.create({
   },
   sendButtonDisabled: {
     backgroundColor: "#9CA3AF",
+  },
+  scrollGradient: {
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    right: 0,
+    height: 75,
   },
 });

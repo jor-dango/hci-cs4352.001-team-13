@@ -11,6 +11,8 @@ import {
   View,
 } from "react-native";
 import { useRouter } from "expo-router";
+import { GlobalStyles } from "@/constants/theme";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const BACKEND_URL = "http://localhost:5001";
 
@@ -119,43 +121,27 @@ export default function Upload() {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Analyze a contract</Text>
+    <SafeAreaView style={styles.safeContainer}>
+      <View style={styles.container}>
+        <Text style={GlobalStyles.h3}>Analyze a contract</Text>
 
       {/* Upload box */}
       <TouchableOpacity
         style={styles.uploadBox}
         onPress={() => setModalVisible(true)}
+        activeOpacity={0.7}
       >
-        <Ionicons name="cloud-upload-outline" size={48} color="#777" />
-        <Text style={styles.uploadText}>Upload a contract</Text>
+        <Ionicons name="cloud-upload-outline" size={48} color="#9CA3AF" />
+        <Text style={[GlobalStyles.body, { color: "#6B7280" }]}>Upload a contract</Text>
       </TouchableOpacity>
 
-      <Text style={styles.orText}>or</Text>
+      <Text style={[GlobalStyles.body, { color: "#6B7280", marginVertical: 20 }]}>or</Text>
 
-      <TouchableOpacity style={styles.takePictureButton}>
-        <Text style={styles.takePictureText}>Take a picture</Text>
+      <TouchableOpacity style={styles.takePictureButton} activeOpacity={0.7}>
+        <Text style={[GlobalStyles.body, { color: "#FFF", fontWeight: "500" }]}>Take a picture</Text>
       </TouchableOpacity>
 
-      {msg ? <Text style={{ marginTop: 10 }}>{msg}</Text> : null}
-
-      {/* {/* Bottom Navigation */}
-      {/* <View style={styles.bottomNav}> */}
-      {/*   <TouchableOpacity style={styles.navItem}> */}
-      {/*     <Ionicons name="cloud-upload-outline" size={22} color="#4338CA" /> */}
-      {/*     <Text style={[styles.navText, styles.navActive]}>Upload</Text> */}
-      {/*   </TouchableOpacity> */}
-      {/**/}
-      {/*   <TouchableOpacity style={styles.navItem}> */}
-      {/*     <Ionicons name="document-text-outline" size={22} color="#000" /> */}
-      {/*     <Text style={styles.navText}>History</Text> */}
-      {/*   </TouchableOpacity> */}
-      {/**/}
-      {/*   <TouchableOpacity style={styles.navItem}> */}
-      {/*     <Ionicons name="settings-outline" size={22} color="#000" /> */}
-      {/*     <Text style={styles.navText}>Settings</Text> */}
-      {/*   </TouchableOpacity> */}
-      {/* </View> */}
+      {msg ? <Text style={[GlobalStyles.small, { marginTop: 16, color: "#6B7280" }]}>{msg}</Text> : null}
 
       {/* Upload Modal */}
       <Modal
@@ -206,71 +192,57 @@ export default function Upload() {
             <TouchableOpacity
               style={styles.managePermissions}
               onPress={pickAndUploadFile}
+              activeOpacity={0.7}
             >
-              <Text style={styles.manageText}>Select and Upload a file</Text>
+              <Text style={styles.manageText}>Upload a file</Text>
             </TouchableOpacity>
 
             <TouchableOpacity
               style={styles.backButton}
               onPress={() => setModalVisible(false)}
+              activeOpacity={0.7}
             >
               <Text style={styles.backButtonText}>Back</Text>
             </TouchableOpacity>
           </View>
         </View>
       </Modal>
-    </View>
+      </View>
+    </SafeAreaView>
   );
 }
 const styles = StyleSheet.create({
+  safeContainer: {
+    flex: 1,
+    backgroundColor: "#EDEDF0",
+  },
   container: {
     flex: 1,
-    backgroundColor: "#F9FAFB",
+    backgroundColor: "#EDEDF0",
     alignItems: "center",
     justifyContent: "flex-start",
-    paddingTop: 80,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: "600",
-    color: "#1F2937",
-    marginBottom: 40,
+    paddingTop: 60,
+    paddingHorizontal: 24,
   },
   uploadBox: {
-    width: 280,
+    width: "100%",
+    maxWidth: 320,
     height: 180,
     borderWidth: 2,
-    borderColor: "#D1D5DB",
+    borderColor: "#BEBEBE",
     borderStyle: "dashed",
     borderRadius: 8,
-    backgroundColor: "#F3F4F6",
+    backgroundColor: "#FFFFFF",
     alignItems: "center",
     justifyContent: "center",
+    marginBottom: 24,
   },
-  uploadText: { marginTop: 12, fontSize: 16, color: "#6B7280" },
-  orText: { fontSize: 16, color: "#6B7280", marginVertical: 20 },
   takePictureButton: {
-    backgroundColor: "#4338CA",
-    paddingVertical: 10,
-    paddingHorizontal: 24,
-    borderRadius: 6,
+    backgroundColor: "#383AB2",
+    paddingVertical: 12,
+    paddingHorizontal: 32,
+    borderRadius: 8,
   },
-  takePictureText: { color: "#FFF", fontSize: 16, fontWeight: "500" },
-  bottomNav: {
-    position: "absolute",
-    bottom: 0,
-    width: "100%",
-    height: 70,
-    backgroundColor: "#FFF",
-    borderTopWidth: 1,
-    borderTopColor: "#E5E7EB",
-    flexDirection: "row",
-    justifyContent: "space-around",
-    alignItems: "center",
-  },
-  navItem: { alignItems: "center" },
-  navText: { marginTop: 4, fontSize: 12, color: "#6B7280" },
-  navActive: { color: "#4338CA" },
   modalBackground: {
     flex: 1,
     backgroundColor: "rgba(0,0,0,0.5)",
@@ -289,41 +261,43 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   modalTitle: {
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: "600",
-    color: "#1F2937",
+    color: "#2C2C2C",
     marginBottom: 16,
   },
   fileList: { flexDirection: "row" },
   fileCard: {
     width: 90,
     height: 110,
-    backgroundColor: "#F9FAFB",
+    backgroundColor: "#FFFFFF",
     borderWidth: 1,
-    borderColor: "#E5E7EB",
-    borderRadius: 10,
+    borderColor: "#BEBEBE",
+    borderRadius: 8,
     alignItems: "center",
     justifyContent: "center",
     marginRight: 10,
   },
   fileName: {
     fontSize: 11,
-    color: "#374151",
+    color: "#2C2C2C",
     textAlign: "center",
     marginTop: 6,
   },
-  managePermissions: { marginTop: 12 },
-  manageText: { fontSize: 13, color: "#6B7280", textAlign: "left" },
+  managePermissions: { marginTop: 16 },
+  manageText: { fontSize: 14, color: "#383AB2", textAlign: "left", fontWeight: "500" },
   backButton: {
     marginTop: 16,
-    backgroundColor: "#E5E7EB",
-    paddingVertical: 10,
-    borderRadius: 6,
+    backgroundColor: "#FFFFFF",
+    borderWidth: 1,
+    borderColor: "#BEBEBE",
+    paddingVertical: 12,
+    borderRadius: 8,
     alignItems: "center",
   },
   backButtonText: {
-    color: "#1F2937",
-    fontSize: 14,
+    color: "#2C2C2C",
+    fontSize: 16,
     fontWeight: "500",
   },
   removeButton: {
