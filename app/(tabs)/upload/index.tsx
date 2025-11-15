@@ -1,5 +1,8 @@
+import { GlobalStyles } from "@/constants/theme";
 import { Ionicons } from "@expo/vector-icons";
 import * as DocumentPicker from "expo-document-picker";
+import * as ImagePicker from "expo-image-picker";
+import { useRouter } from "expo-router";
 import { useState } from "react";
 import {
   Modal,
@@ -10,8 +13,6 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { useRouter } from "expo-router";
-import { GlobalStyles } from "@/constants/theme";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 const BACKEND_URL = "http://localhost:5001";
@@ -31,6 +32,70 @@ export default function Upload() {
   const [files, setFiles] = useState<FileItem[]>([]);
   const [msg, setMsg] = useState("");
   const router = useRouter();
+
+  const takePhotoAndUpload = async () => {
+    try {
+      const permission = await ImagePicker.requestCameraPermissionsAsync();
+      if (!permission.granted) {
+        setMsg("❌ Camera permission denied");
+        setTimeout(() => setMsg(""), 2500);
+        return;
+      }
+
+      const result = await ImagePicker.launchCameraAsync({
+        allowsEditing: false,
+        quality: 1,
+      });
+
+      if (result.canceled) return;
+
+      const file = result.assets[0];
+      const { uri } = file;
+
+      const fileName = `photo_${Date.now()}.jpg`;
+
+      const formData = new FormData();
+      formData.append("file", {
+        uri: Platform.OS === "ios" ? uri.replace("file://", "") : uri,
+        name: fileName,
+        type: "image/jpeg",
+      } as any);
+
+      const res = await fetch(`${BACKEND_URL}/upload`, {
+        method: "POST",
+        body: formData,
+      });
+
+      const contentType = res.headers.get("content-type") || "";
+      let data: any;
+      if (contentType.includes("application/json")) {
+        data = await res.json();
+      } else {
+        const text = await res.text();
+        console.warn("Server returned non-JSON:", text);
+        data = { error: "Server returned non-JSON response" };
+      }
+
+      if (res.ok) {
+        const savedName = data.savedFileName || name;
+        setFiles((prev) => [...prev, { name: savedName, uri }]);
+        setMsg(data.message || "Photo uploaded successfully");
+
+        // Navigate to analysis page with filename
+        router.push({
+          pathname: "/(tabs)/upload/analysis",
+          params: { filename: savedName },
+        });
+      } else {
+        setMsg(data.error || "Upload failed");
+      }
+      setTimeout(() => setMsg(""), 2500);
+    } catch (err) {
+      console.error(err);
+      setMsg("❌ Upload failed");
+      setTimeout(() => setMsg(""), 2500);
+    }
+  }
 
   const pickAndUploadFile = async () => {
     try {
@@ -143,7 +208,11 @@ export default function Upload() {
           or
         </Text>
 
-        <TouchableOpacity style={styles.takePictureButton} activeOpacity={0.7}>
+        <TouchableOpacity
+          style={styles.takePictureButton}
+          activeOpacity={0.7}
+          onPress={takePhotoAndUpload}
+        >
           <Text
             style={[GlobalStyles.body, { color: "#FFF", fontWeight: "500" }]}
           >
