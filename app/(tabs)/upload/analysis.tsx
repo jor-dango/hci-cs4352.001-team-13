@@ -310,10 +310,10 @@ export default function AnalysisScreen() {
           </Text>
           <View style={styles.lightContainer}>
             <Text style={GlobalStyles.small}>
-              1. Foobar{"\n\n"}
-              2. Barfoo{"\n\n"}
-              3. Bada bing{"\n\n"}
-              4. Bada boom
+              1. Your employer may keep your resume on file for an indefinite time during or after employment.{"\n\n"}
+              2. Your employer may require employee monitoring software to be installed on your personal smartphone.{"\n\n"}
+              3. Third-party services may be contracted by your employer to keep employee monitoring statistics.{"\n\n"}
+              4. Your employer may require you to register and login to third-party services with your personal email and phone number.{"\n\n"}
             </Text>
           </View>
         </View>
