@@ -313,7 +313,7 @@ export default function AnalysisScreen() {
               1. Your employer may keep your resume on file for an indefinite time during or after employment.{"\n\n"}
               2. Your employer may require employee monitoring software to be installed on your personal smartphone.{"\n\n"}
               3. Third-party services may be contracted by your employer to keep employee monitoring statistics.{"\n\n"}
-              4. Your employer may require you to register and login to third-party services with your personal email and phone number.{"\n\n"}
+              4. Your employer may require you to register and login to third-party services with your personal email and phone number.
             </Text>
           </View>
         </View>
@@ -331,7 +331,8 @@ export default function AnalysisScreen() {
           {openSections.terms && (
             <View style={styles.lightContainer}>
               <Text style={GlobalStyles.small}>
-                - Term 1: Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                - Breaks: You are entitled to 30 minute breaks on workdays greater than 6 hours, but no breaks are entitled on workdays less than 6 hours.
+                - Vacations: Vacations are not offereed by your employer.
               </Text>
             </View>
           )}
@@ -348,7 +349,8 @@ export default function AnalysisScreen() {
           {openSections.pay && (
             <View style={styles.lightContainer}>
               <Text style={GlobalStyles.small}>
-                - Payment Clause: Ut enim ad minim veniam, quis nostrud
+                - Wages: Wages shall be paid every week. You may request raises to your employer after 6 months of employment.
+                - Direct Deposit: Your employer will require your banking information your banking information for direct depositing your wages.
               </Text>
             </View>
           )}
@@ -365,7 +367,8 @@ export default function AnalysisScreen() {
           {openSections.schedule && (
             <View style={styles.lightContainer}>
               <Text style={GlobalStyles.small}>
-                - Schedule Clause: Duis aute irure dolor in reprehenderit in
+                - Scheduling: Your employer shall assemble your Sun-Sat weekly schedule week-by-week as required for business operation. Further details regarding schedule must be agreed upon with your manager.
+                - Missed work: You are required to announce unavailabilities to your manager as soon as possible.
               </Text>
             </View>
           )}
