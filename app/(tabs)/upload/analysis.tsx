@@ -331,7 +331,7 @@ export default function AnalysisScreen() {
           {openSections.terms && (
             <View style={styles.lightContainer}>
               <Text style={GlobalStyles.small}>
-                - Breaks: You are entitled to 30 minute breaks on workdays greater than 6 hours, but no breaks are entitled on workdays less than 6 hours.
+                - Breaks: You are entitled to 30 minute breaks on workdays greater than 6 hours, but no breaks are entitled on workdays less than 6 hours.{"\n\n"}
                 - Vacations: Vacations are not offereed by your employer.
               </Text>
             </View>
@@ -349,7 +349,7 @@ export default function AnalysisScreen() {
           {openSections.pay && (
             <View style={styles.lightContainer}>
               <Text style={GlobalStyles.small}>
-                - Wages: Wages shall be paid every week. You may request raises to your employer after 6 months of employment.
+                - Wages: Wages shall be paid every week. You may request raises to your employer after 6 months of employment.{"\n\n"}
                 - Direct Deposit: Your employer will require your banking information your banking information for direct depositing your wages.
               </Text>
             </View>
@@ -367,7 +367,7 @@ export default function AnalysisScreen() {
           {openSections.schedule && (
             <View style={styles.lightContainer}>
               <Text style={GlobalStyles.small}>
-                - Scheduling: Your employer shall assemble your Sun-Sat weekly schedule week-by-week as required for business operation. Further details regarding schedule must be agreed upon with your manager.
+                - Scheduling: Your employer shall assemble your Sun-Sat weekly schedule week-by-week as required for business operation. Further details regarding schedule must be agreed upon with your manager.{"\n\n"}
                 - Missed work: You are required to announce unavailabilities to your manager as soon as possible.
               </Text>
             </View>
