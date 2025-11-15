@@ -1,6 +1,9 @@
+import ActionButtonPair from "@/components/ui/action-button-pair";
+import ComparisonModal from "@/components/ui/comparison-modal";
 import { GlobalStyles } from "@/constants/theme";
-import React, { useState, useEffect } from "react";
-import { useRouter, useLocalSearchParams } from "expo-router";
+import { LinearGradient } from "expo-linear-gradient";
+import { useLocalSearchParams, useRouter } from "expo-router";
+import React, { useEffect, useState } from "react";
 import {
   ActivityIndicator,
   Alert,
@@ -14,9 +17,6 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import ActionButtonPair from "@/components/ui/action-button-pair";
-import ComparisonModal from "@/components/ui/comparison-modal";
-import { LinearGradient } from "expo-linear-gradient";
 
 // Use localhost for simulator, or your local IP for physical device
 const BACKEND_URL = "http://localhost:5001";
@@ -38,6 +38,7 @@ export default function AnalysisScreen() {
   const [isSaving, setIsSaving] = useState(false);
   const [showComparisonModal, setShowComparisonModal] = useState(false);
   const [archivedContracts, setArchivedContracts] = useState<any[]>([]);
+  const [openSections, setOpenSections] = useState({terms: false, pay: false, schedule: false});
 
   // Check if we came from history (already archived)
   const isFromHistory = source === "history";
@@ -322,15 +323,56 @@ export default function AnalysisScreen() {
         </View>
         <View style={styles.section}>
           <Text style={GlobalStyles.body}>Other sections and concerns:</Text>
-          <View style={styles.lightContainer}>
-            <Text style={GlobalStyles.small}>I. TERMS</Text>
-          </View>
-          <View style={styles.lightContainer}>
-            <Text style={GlobalStyles.small}>II. PAY</Text>
-          </View>
-          <View style={styles.lightContainer}>
-            <Text style={GlobalStyles.small}>III. SCHEDULE</Text>
-          </View>
+          <TouchableOpacity
+            style={styles.lightContainer}
+            onPress={() => 
+              setOpenSections((prev) => ({...prev, terms: !prev.terms}))
+            }
+            activeOpacity={0.7}
+          >
+            <Text style={GlobalStyles.small}>{openSections.terms ? "▼ " : "▶ "} I. TERMS</Text>
+          </TouchableOpacity>
+          {openSections.terms && (
+            <View style={styles.lightContainer}>
+              <Text style={GlobalStyles.small}>
+                - Term 1: Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+              </Text>
+            </View>
+          )}
+
+          <TouchableOpacity
+            style={styles.lightContainer}
+            onPress={() => 
+              setOpenSections((prev) => ({...prev, pay: !prev.pay}))
+            }
+            activeOpacity={0.7}
+          >
+            <Text style={GlobalStyles.small}>{openSections.pay ? "▼ " : "▶ "} II. PAY</Text>
+          </TouchableOpacity>
+          {openSections.pay && (
+            <View style={styles.lightContainer}>
+              <Text style={GlobalStyles.small}>
+                - Payment Clause: Ut enim ad minim veniam, quis nostrud
+              </Text>
+            </View>
+          )}
+
+          <TouchableOpacity
+            style={styles.lightContainer}
+            onPress={() => 
+              setOpenSections((prev) => ({...prev, schedule: !prev.schedule}))
+            }
+            activeOpacity={0.7}
+          >
+            <Text style={GlobalStyles.small}>{openSections.schedule ? "▼ " : "▶ "} III. SCHEDULE</Text>
+          </TouchableOpacity>
+          {openSections.schedule && (
+            <View style={styles.lightContainer}>
+              <Text style={GlobalStyles.small}>
+                - Schedule Clause: Duis aute irure dolor in reprehenderit in
+              </Text>
+            </View>
+          )}
         </View>
         {isFromHistory ? (
           <ActionButtonPair
