@@ -350,7 +350,7 @@ export default function AnalysisScreen() {
             <View style={styles.lightContainer}>
               <Text style={GlobalStyles.small}>
                 - Wages: Wages shall be paid every week. You may request raises to your employer after 6 months of employment.{"\n\n"}
-                - Direct Deposit: Your employer will require your banking information your banking information for direct depositing your wages.
+                - Direct Deposit: Your employer will require your banking information for direct depositing your wages.
               </Text>
             </View>
           )}
