@@ -27,7 +27,7 @@ export default function SettingsScreen() {
         </View>
         <Divider />
         <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', minWidth: '100%' }}>
-          <Link href={"/(tabs)/settings/accounts"}>
+          <Link href={"/(tabs)/settings/verification"}>
             Connected Accounts
           </Link>
           <ChevronRight />

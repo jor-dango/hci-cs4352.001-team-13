@@ -29,12 +29,19 @@ export default function HomeStack() {
         }}
       />
       <Stack.Screen
+        name="verification"
+        options={{
+          title: "Verification",
+          presentation: "card",
+        }}
+      />
+      {/* <Stack.Screen
         name="preferences"
         options={{
           title: "Preferences",
           presentation: "card",
         }}
-      />
+      /> */}
     </Stack>
   );
 }
