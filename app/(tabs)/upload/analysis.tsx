@@ -19,7 +19,7 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 
 // Use localhost for simulator, or your local IP for physical device
-const BACKEND_URL = "http://localhost:5001";
+const BACKEND_URL = "http://10.0.0.22:5001";
 
 export default function AnalysisScreen() {
   const router = useRouter();
@@ -310,14 +310,10 @@ export default function AnalysisScreen() {
           </Text>
           <View style={styles.lightContainer}>
             <Text style={GlobalStyles.small}>
-              1. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-              eiusmod tempor{"\n\n"}
-              2. incididunt ut labore et dolore magna aliqua. Ut enim ad minim
-              veniam, quis nostrud{"\n\n"}
-              3. exercitation ullamco laboris nisi ut aliquip ex ea commodo
-              consequat. Duis aute irure{"\n\n"}
-              4. dolor in reprehenderit in voluptate velit esse cillum dolore eu
-              fugiat nulla pariatur
+              1. Foo{"\n\n"}
+              2. Bar{"\n\n"}
+              3. Bada bing{"\n\n"}
+              4. Bada boom
             </Text>
           </View>
         </View>

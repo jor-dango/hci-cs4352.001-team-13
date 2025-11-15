@@ -1,15 +1,15 @@
-import { View, StyleSheet, Text, ScrollView, ActivityIndicator } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { GlobalStyles } from "@/constants/theme";
-import HistoryCard from "@/components/ui/history-card";
 import ComparisonModal from "@/components/ui/comparison-modal";
-import { useRouter } from "expo-router";
-import { useState, useCallback } from "react";
+import HistoryCard from "@/components/ui/history-card";
+import { GlobalStyles } from "@/constants/theme";
 import { useFocusEffect } from "@react-navigation/native";
 import { LinearGradient } from "expo-linear-gradient";
+import { useRouter } from "expo-router";
+import { useCallback, useState } from "react";
+import { ActivityIndicator, ScrollView, StyleSheet, Text, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 // Use localhost for simulator, or your local IP for physical device
-const BACKEND_URL = "http://localhost:5001";
+const BACKEND_URL = "http://10.0.0.22:5001";
 
 interface UploadedFile {
   filename: string;
