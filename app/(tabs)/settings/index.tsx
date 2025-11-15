@@ -1,3 +1,4 @@
+import Divider from "@/components/ui/divider";
 import { GlobalStyles } from "@/constants/theme";
 import { Link } from "expo-router";
 import { ChevronRight } from 'lucide-react-native';
@@ -36,10 +37,6 @@ export default function SettingsScreen() {
       </View>
     </SafeAreaView>
   );
-}
-
-function Divider() {
-  return <View style={{ height: 1, minWidth: '100%', backgroundColor: '#BEBEBE' }} />
 }
 
 const styles = StyleSheet.create({
