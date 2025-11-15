@@ -310,8 +310,8 @@ export default function AnalysisScreen() {
           </Text>
           <View style={styles.lightContainer}>
             <Text style={GlobalStyles.small}>
-              1. Foo{"\n\n"}
-              2. Bar{"\n\n"}
+              1. Foobar{"\n\n"}
+              2. Barfoo{"\n\n"}
               3. Bada bing{"\n\n"}
               4. Bada boom
             </Text>
