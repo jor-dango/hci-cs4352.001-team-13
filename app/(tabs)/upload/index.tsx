@@ -15,7 +15,7 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-const BACKEND_URL = "http://localhost:5001";
+const BACKEND_URL = "http://10.0.0.22:5001";
 
 type FileItem = {
   name: string;

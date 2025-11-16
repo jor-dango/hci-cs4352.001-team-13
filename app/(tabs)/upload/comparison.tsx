@@ -1,6 +1,7 @@
 import { GlobalStyles } from "@/constants/theme";
-import React, { useState, useEffect } from "react";
-import { useRouter, useLocalSearchParams } from "expo-router";
+import { LinearGradient } from "expo-linear-gradient";
+import { useLocalSearchParams, useRouter } from "expo-router";
+import React, { useEffect, useState } from "react";
 import {
   ActivityIndicator,
   ScrollView,
@@ -10,10 +11,9 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { LinearGradient } from "expo-linear-gradient";
 
 // Use localhost for simulator, or your local IP for physical device
-const BACKEND_URL = "http://localhost:5001";
+const BACKEND_URL = "http://10.0.0.22:5001";
 
 interface ContractMetadata {
   filename: string;
