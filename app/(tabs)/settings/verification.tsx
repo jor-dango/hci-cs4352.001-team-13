@@ -21,26 +21,35 @@ export default function VerificationScreen() {
 
   return (
     <SafeAreaView style={styles.safeContainer} edges={['top']}>
-      <View style={styles.container}>
-        <Text style={[GlobalStyles.body, { fontWeight: 'bold' }]}>
-          Please confirm your identity:
-        </Text>
-        <TextInput
-          placeholder='Password'
-          value={input}
-          onChangeText={e => setInput(e)}
-          style={{ borderColor: '#BEBEBE', borderWidth: 1, padding: 8, width: '50%', borderRadius: 8, fontSize: 16 }}
-        />
-        <TouchableOpacity style={styles.button} onPress={verifyPassword}>
-          <Text style={[GlobalStyles.body, { color: "#FFFFFF" }]}>
-            Submit
-          </Text>
+      <View style={styles.outerContainer}>
+        <TouchableOpacity
+          style={styles.backButton}
+          onPress={() => router.back()}
+          activeOpacity={0.7}
+        >
+          <Text style={[GlobalStyles.body, { color: "#383AB2" }]}>← Go Back</Text>
         </TouchableOpacity>
-        {errMsg &&
-          <Text style={[GlobalStyles.body, { color: '#EF1111' }]}>
-            {errMsg}
+        <View style={styles.container}>
+          <Text style={[GlobalStyles.body, { fontWeight: 'bold' }]}>
+            Please confirm your identity:
           </Text>
-        }
+          <TextInput
+            placeholder='Password'
+            value={input}
+            onChangeText={e => setInput(e)}
+            style={{ borderColor: '#BEBEBE', borderWidth: 1, padding: 8, width: '50%', borderRadius: 8, fontSize: 16 }}
+          />
+          <TouchableOpacity style={styles.button} onPress={verifyPassword}>
+            <Text style={[GlobalStyles.body, { color: "#FFFFFF" }]}>
+              Submit
+            </Text>
+          </TouchableOpacity>
+          {errMsg &&
+            <Text style={[GlobalStyles.body, { color: '#EF1111' }]}>
+              {errMsg}
+            </Text>
+          }
+        </View>
       </View>
     </SafeAreaView >
   )
@@ -51,13 +60,20 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#EDEDF0",
   },
+  outerContainer: {
+    flex: 1,
+    backgroundColor: "#EDEDF0",
+    paddingTop: 16,
+    paddingLeft: 24,
+    paddingRight: 24,
+  },
+  backButton: {
+    marginBottom: 8,
+  },
   container: {
     backgroundColor: "#EDEDF0",
     display: 'flex',
     flex: 1,
-    paddingTop: 16,
-    paddingLeft: 24,
-    paddingRight: 24,
     gap: 8,
     justifyContent: 'center',
     alignItems: 'center'
