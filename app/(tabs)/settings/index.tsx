@@ -1,37 +1,45 @@
 import Divider from "@/components/ui/divider";
 import { GlobalStyles } from "@/constants/theme";
-import { Link } from "expo-router";
+import { useRouter } from "expo-router";
 import { ChevronRight } from 'lucide-react-native';
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function SettingsScreen() {
+  const router = useRouter();
+
   return (
     <SafeAreaView style={styles.safeContainer} edges={['top']}>
       <View style={styles.container}>
         <Text style={GlobalStyles.h3}>Settings</Text>
         <View style={{ height: 20 }} />
         <Divider />
-        <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', minWidth: '100%' }}>
-          <Link href={"/(tabs)/settings/preferences"}>
-            Info Preferences
-          </Link>
+        <TouchableOpacity
+          style={styles.settingsRow}
+          onPress={() => router.push("/(tabs)/settings/preferences")}
+          activeOpacity={0.7}
+        >
+          <Text style={GlobalStyles.body}>Info Preferences</Text>
           <ChevronRight />
-        </View>
+        </TouchableOpacity>
         <Divider />
-        <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', minWidth: '100%' }}>
-          <Link href={"/(tabs)/settings/alerts"}>
-            Alerts
-          </Link>
+        <TouchableOpacity
+          style={styles.settingsRow}
+          onPress={() => router.push("/(tabs)/settings/alerts")}
+          activeOpacity={0.7}
+        >
+          <Text style={GlobalStyles.body}>Alerts</Text>
           <ChevronRight />
-        </View>
+        </TouchableOpacity>
         <Divider />
-        <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', minWidth: '100%' }}>
-          <Link href={"/(tabs)/settings/verification"}>
-            Connected Accounts
-          </Link>
+        <TouchableOpacity
+          style={styles.settingsRow}
+          onPress={() => router.push("/(tabs)/settings/verification")}
+          activeOpacity={0.7}
+        >
+          <Text style={GlobalStyles.body}>Connected Accounts</Text>
           <ChevronRight />
-        </View>
+        </TouchableOpacity>
         <Divider />
 
       </View>
@@ -51,5 +59,13 @@ const styles = StyleSheet.create({
     paddingLeft: 24,
     paddingRight: 24,
     gap: 8
+  },
+  settingsRow: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    minWidth: '100%',
+    paddingVertical: 4,
   },
 });
