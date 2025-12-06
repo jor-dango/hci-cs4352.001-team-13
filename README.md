@@ -252,5 +252,5 @@ Educational project for HCI CS 4352.001 - Team 13
 
 ---
 
-**Last Updated**: November 2024
+**Last Updated**: November 2025
 **Status**: In Active Development
