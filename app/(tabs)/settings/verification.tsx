@@ -29,10 +29,10 @@ export default function VerificationScreen() {
           placeholder='Password'
           value={input}
           onChangeText={e => setInput(e)}
-          style={{ borderColor: '#BEBEBE', borderWidth: 1, padding: 8, width: '50%', borderRadius: 8 }}
+          style={{ borderColor: '#BEBEBE', borderWidth: 1, padding: 8, width: '50%', borderRadius: 8, fontSize: 16 }}
         />
         <TouchableOpacity style={styles.button} onPress={verifyPassword}>
-          <Text style={[GlobalStyles.small, { color: "#FFFFFF" }]}>
+          <Text style={[GlobalStyles.body, { color: "#FFFFFF" }]}>
             Submit
           </Text>
         </TouchableOpacity>
