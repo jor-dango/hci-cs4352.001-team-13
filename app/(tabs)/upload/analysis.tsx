@@ -445,19 +445,13 @@ export default function AnalysisScreen() {
           </View>
         )}
         <View style={styles.section}>
-          <Text style={GlobalStyles.body}>
-            Here are the key privacy concerns in your{" "}
-            {filename
-              ? `${filename.replace(/\.(pdf|docx|jpg|png)$/i, "")} contract`
-              : "contract"}
-            :
-          </Text>
+          <Text style={styles.sectionTitle}>Key Privacy Concerns</Text>
           <View style={styles.lightContainer}>
-            <Text style={GlobalStyles.small}>
-              1. Your employer may keep your resume on file for an indefinite time during or after employment.{"\n\n"}
-              2. Your employer may require employee monitoring software to be installed on your personal smartphone.{"\n\n"}
-              3. Third-party services may be contracted by your employer to keep employee monitoring statistics.{"\n\n"}
-              4. Your employer may require you to register and login to third-party services with your personal email and phone number.
+            <Text style={GlobalStyles.body}>
+              <Text style={{ fontWeight: "bold" }}>Resume retention:</Text> Employer may keep your resume indefinitely.{"\n\n"}
+              <Text style={{ fontWeight: "bold" }}>Device monitoring:</Text> May require monitoring software on your personal phone.{"\n\n"}
+              <Text style={{ fontWeight: "bold" }}>Third-party tracking:</Text> External services may track employee data.{"\n\n"}
+              <Text style={{ fontWeight: "bold" }}>Personal info required:</Text> Registration with personal email and phone may be needed.
             </Text>
           </View>
         </View>
@@ -586,6 +580,11 @@ const styles = StyleSheet.create({
   },
   section: {
     gap: 8,
+  },
+  sectionTitle: {
+    fontSize: 24,
+    fontWeight: "600",
+    color: "#2C2C2C",
   },
   tag: {
     borderColor: "#BEBEBE",
