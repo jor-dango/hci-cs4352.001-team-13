@@ -3,7 +3,7 @@ import ComparisonModal from "@/components/ui/comparison-modal";
 import { GlobalStyles } from "@/constants/theme";
 import { LinearGradient } from "expo-linear-gradient";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   ActivityIndicator,
   Alert,
@@ -18,8 +18,8 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-// Use localhost for simulator, or your local IP for physical device
-const BACKEND_URL = "http://10.0.0.22:5001";
+// Use the same IP that Metro is running on (check Expo QR code for your current IP)
+const BACKEND_URL = "http://192.168.1.40:5001";
 
 export default function AnalysisScreen() {
   const router = useRouter();
@@ -39,6 +39,7 @@ export default function AnalysisScreen() {
   const [showComparisonModal, setShowComparisonModal] = useState(false);
   const [archivedContracts, setArchivedContracts] = useState<any[]>([]);
   const [openSections, setOpenSections] = useState({terms: false, pay: false, schedule: false});
+  const scrollViewRef = useRef<ScrollView>(null);
 
   // Check if we came from history (already archived)
   const isFromHistory = source === "history";
@@ -48,6 +49,13 @@ export default function AnalysisScreen() {
       fetchFileMetadata();
     }
   }, [filename]);
+
+  // Auto-scroll to bottom when messages change
+  useEffect(() => {
+    if (messages.length > 0) {
+      scrollViewRef.current?.scrollToEnd({ animated: true });
+    }
+  }, [messages]);
 
   const fetchFileMetadata = async () => {
     try {
@@ -180,7 +188,7 @@ export default function AnalysisScreen() {
       <KeyboardAvoidingView
         style={styles.chatContainer}
         behavior={Platform.OS === "ios" ? "padding" : "height"}
-        keyboardVerticalOffset={100}
+        keyboardVerticalOffset={0}
       >
         <SafeAreaView style={styles.chatHeader}>
           <TouchableOpacity
@@ -196,6 +204,7 @@ export default function AnalysisScreen() {
         </SafeAreaView>
 
         <ScrollView
+          ref={scrollViewRef}
           style={styles.messagesContainer}
           contentContainerStyle={styles.messagesContent}
         >
@@ -221,8 +230,11 @@ export default function AnalysisScreen() {
               >
                 <Text
                   style={[
-                    GlobalStyles.small,
-                    { color: message.isUser ? "#FFFFFF" : "#000000" },
+                    GlobalStyles.body,
+                    {
+                      color: message.isUser ? "#FFFFFF" : "#000000",
+                      flexShrink: 1,
+                    },
                   ]}
                 >
                   {message.text}
@@ -488,6 +500,7 @@ const styles = StyleSheet.create({
     padding: 12,
     borderRadius: 12,
     maxWidth: "80%",
+    flexShrink: 1,
   },
   userMessage: {
     backgroundColor: "#383AB2",
@@ -503,8 +516,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     gap: 8,
     paddingTop: 16,
+    paddingBottom: 16,
     borderTopWidth: 1,
-    marginBottom: 124,
     borderTopColor: "#BEBEBE",
     backgroundColor: "#EDEDF0",
   },
