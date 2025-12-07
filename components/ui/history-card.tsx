@@ -33,6 +33,7 @@ export default function HistoryCard({
         rightButtonText="Compare"
         onLeftPress={onView}
         onRightPress={onCompare}
+        variant="left-primary"
       />
     </View>
   );
