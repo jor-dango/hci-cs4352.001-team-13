@@ -295,6 +295,27 @@ export default function AnalysisScreen() {
     }
   };
 
+  const handlePresetQuestion = (question: string) => {
+    setMessages([...messages, { text: question, isUser: true }]);
+
+    // Simulate AI response
+    setTimeout(() => {
+      setMessages((prev) => [
+        ...prev,
+        {
+          text: "This is a response to your question about the contract.",
+          isUser: false,
+        },
+      ]);
+    }, 1000);
+  };
+
+  const presetQuestions = [
+    { text: "What are the break policies?", section: "Terms" },
+    { text: "How often will I be paid?", section: "Pay" },
+    { text: "Can I request schedule changes?", section: "Schedule" },
+  ];
+
   // Chat View
   if (showChat) {
     return (
@@ -305,7 +326,26 @@ export default function AnalysisScreen() {
       >
         <SafeAreaView style={styles.chatHeader}>
           <BackButton onPress={handleBack} label="Back" />
-          <Text style={GlobalStyles.h3}>Ask Questions</Text>
+          <Text style={[GlobalStyles.h3, { marginBottom: 8 }]}>Ask Questions</Text>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            style={styles.presetQuestionsScroll}
+            contentContainerStyle={styles.presetQuestionsContent}
+          >
+            {presetQuestions.map((q, index) => (
+              <TouchableOpacity
+                key={index}
+                style={styles.presetQuestionButton}
+                onPress={() => handlePresetQuestion(q.text)}
+                activeOpacity={0.7}
+              >
+                <Text style={[GlobalStyles.small, { color: "#383AB2" }]}>
+                  {q.text}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </ScrollView>
         </SafeAreaView>
 
         <ScrollView
@@ -321,7 +361,7 @@ export default function AnalysisScreen() {
                   { color: "#9CA3AF", textAlign: "center" },
                 ]}
               >
-                Ask any questions about your contract analysis
+                Tap a question above or type your own
               </Text>
             </View>
           ) : (
@@ -580,7 +620,7 @@ const styles = StyleSheet.create({
     paddingBottom: 16,
   },
   chatHeader: {
-    marginBottom: 24,
+    marginBottom: 16,
   },
   backButton: {
     marginBottom: 8,
@@ -655,5 +695,20 @@ const styles = StyleSheet.create({
   deleteButton: {
     alignItems: "center",
     paddingVertical: 12,
+  },
+  presetQuestionsScroll: {
+    maxHeight: 40,
+  },
+  presetQuestionsContent: {
+    gap: 8,
+    paddingHorizontal: 24,
+  },
+  presetQuestionButton: {
+    backgroundColor: "#FFFFFF",
+    borderColor: "#383AB2",
+    borderWidth: 1,
+    borderRadius: 20,
+    paddingVertical: 8,
+    paddingHorizontal: 12,
   },
 });
