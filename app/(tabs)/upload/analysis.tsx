@@ -199,6 +199,54 @@ export default function AnalysisScreen() {
     setShowChat(false);
   };
 
+  const handleDeleteContract = async () => {
+    if (!filename) return;
+
+    Alert.alert(
+      "Delete Contract",
+      "Are you sure you want to delete this contract? This action cannot be undone.",
+      [
+        {
+          text: "Cancel",
+          style: "cancel",
+        },
+        {
+          text: "Delete",
+          style: "destructive",
+          onPress: async () => {
+            try {
+              const response = await fetch(
+                `${BACKEND_URL}/upload/${encodeURIComponent(filename)}`,
+                { method: "DELETE" }
+              );
+
+              if (response.ok) {
+                Alert.alert("Deleted", "Contract deleted successfully", [
+                  {
+                    text: "OK",
+                    onPress: () => {
+                      if (isFromHistory) {
+                        router.dismissAll();
+                        router.replace("/(tabs)/history");
+                      } else {
+                        router.back();
+                      }
+                    },
+                  },
+                ]);
+              } else {
+                Alert.alert("Error", "Failed to delete contract");
+              }
+            } catch (err) {
+              console.error(err);
+              Alert.alert("Error", "Failed to delete contract");
+            }
+          },
+        },
+      ]
+    );
+  };
+
   const handleBackNavigation = () => {
     // If from history or already archived, navigate directly
     if (isFromHistory || isArchived) {
@@ -450,6 +498,17 @@ export default function AnalysisScreen() {
             onRightPress={handleQuestion}
           />
         )}
+        {(isArchived || isFromHistory) && (
+          <TouchableOpacity
+            style={styles.deleteButton}
+            onPress={handleDeleteContract}
+            activeOpacity={0.7}
+          >
+            <Text style={[GlobalStyles.body, { color: "#DC2626" }]}>
+              Delete Contract
+            </Text>
+          </TouchableOpacity>
+        )}
         <ComparisonModal
           visible={showComparisonModal}
           currentContract={String(filename)}
@@ -592,5 +651,9 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     height: 75,
+  },
+  deleteButton: {
+    alignItems: "center",
+    paddingVertical: 12,
   },
 });
