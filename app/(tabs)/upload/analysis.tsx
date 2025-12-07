@@ -57,6 +57,40 @@ export default function AnalysisScreen() {
     }
   }, [messages]);
 
+  // Warn user before navigating away if not archived
+  useEffect(() => {
+    const beforeRemove = (e: any) => {
+      // Allow navigation if already archived or from history
+      if (isArchived || isFromHistory) {
+        return;
+      }
+
+      // Prevent default navigation
+      e.preventDefault();
+
+      // Show confirmation dialog
+      Alert.alert(
+        "Leave without saving?",
+        "This contract hasn't been saved to your archive yet. Are you sure you want to leave?",
+        [
+          {
+            text: "Cancel",
+            style: "cancel",
+          },
+          {
+            text: "Leave",
+            style: "destructive",
+            onPress: () => router.back(),
+          },
+        ]
+      );
+    };
+
+    // Note: This is a placeholder - Expo Router doesn't support beforeRemove yet
+    // The back button warning will handle most cases
+    return () => {};
+  }, [isArchived, isFromHistory]);
+
   const fetchFileMetadata = async () => {
     try {
       setLoading(true);
@@ -162,6 +196,36 @@ export default function AnalysisScreen() {
 
   const handleBack = () => {
     setShowChat(false);
+  };
+
+  const handleBackNavigation = () => {
+    // If from history or already archived, navigate directly
+    if (isFromHistory || isArchived) {
+      if (isFromHistory) {
+        router.dismissAll();
+        router.replace("/(tabs)/history");
+      } else {
+        router.back();
+      }
+      return;
+    }
+
+    // Show warning if not archived
+    Alert.alert(
+      "Leave without saving?",
+      "This contract hasn't been saved to your archive yet. Are you sure you want to leave?",
+      [
+        {
+          text: "Cancel",
+          style: "cancel",
+        },
+        {
+          text: "Leave",
+          style: "destructive",
+          onPress: () => router.back(),
+        },
+      ]
+    );
   };
 
   const handleSend = () => {
@@ -278,15 +342,7 @@ export default function AnalysisScreen() {
       >
         <TouchableOpacity
           style={styles.backButton}
-          onPress={() => {
-            if (isFromHistory) {
-              // Clear the upload stack and go to history
-              router.dismissAll();
-              router.replace("/(tabs)/history");
-            } else {
-              router.back();
-            }
-          }}
+          onPress={handleBackNavigation}
           activeOpacity={0.7}
         >
           <Text style={[GlobalStyles.body, { color: "#383AB2" }]}>
