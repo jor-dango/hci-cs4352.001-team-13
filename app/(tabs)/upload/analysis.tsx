@@ -40,6 +40,7 @@ export default function AnalysisScreen() {
   const [showComparisonModal, setShowComparisonModal] = useState(false);
   const [archivedContracts, setArchivedContracts] = useState<any[]>([]);
   const [openSections, setOpenSections] = useState({terms: false, pay: false, schedule: false});
+  const [showPreferencesBanner, setShowPreferencesBanner] = useState(true);
   const scrollViewRef = useRef<ScrollView>(null);
 
   // Check if we came from history (already archived)
@@ -444,6 +445,25 @@ export default function AnalysisScreen() {
             </Text>
           </View>
         )}
+        {showPreferencesBanner && (
+          <View style={styles.infoBanner}>
+            <View style={styles.infoBannerContent}>
+              <Text style={GlobalStyles.small}>
+                💡 Customize which privacy concerns matter most to you in{" "}
+                <Text style={{ fontWeight: "bold", color: "#383AB2" }}>
+                  Settings → Info Preferences
+                </Text>
+              </Text>
+            </View>
+            <TouchableOpacity
+              onPress={() => setShowPreferencesBanner(false)}
+              style={styles.closeBannerButton}
+              activeOpacity={0.7}
+            >
+              <Text style={{ fontSize: 18, color: "#6B7280" }}>×</Text>
+            </TouchableOpacity>
+          </View>
+        )}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Key Privacy Concerns</Text>
           <View style={styles.lightContainer}>
@@ -709,5 +729,21 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     paddingVertical: 8,
     paddingHorizontal: 12,
+  },
+  infoBanner: {
+    backgroundColor: "#EEF2FF",
+    borderColor: "#C7D2FE",
+    borderWidth: 1,
+    borderRadius: 8,
+    padding: 12,
+    flexDirection: "row",
+    alignItems: "flex-start",
+    gap: 8,
+  },
+  infoBannerContent: {
+    flex: 1,
+  },
+  closeBannerButton: {
+    padding: 4,
   },
 });
