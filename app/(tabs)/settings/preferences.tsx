@@ -2,12 +2,17 @@ import BackButton from '@/components/ui/back-button';
 import Divider from '@/components/ui/divider';
 import SettingsToggle from '@/components/ui/settings-toggle';
 import { GlobalStyles } from '@/constants/theme';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { router } from 'expo-router';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+const PREFERENCES_KEY = '@preferences';
+
 export default function PreferencesScreen() {
+  const [preferences, setPreferences] = useState<Record<string, boolean>>({});
+  const [loaded, setLoaded] = useState(false);
 
   const info = [
     'SSN',
@@ -18,23 +23,59 @@ export default function PreferencesScreen() {
     'Social Media'
   ]
   const socials = [
-    { 
-      name: 'Instagram', 
-      label: '@_account1_' 
+    {
+      name: 'Instagram',
+      label: '@_account1_'
     },
-    { 
-      name: 'Instagram', 
-      label: '@private_account2020_' 
+    {
+      name: 'Instagram',
+      label: '@private_account2020_'
     },
-    { 
-      name: 'LinkedIn', 
-      label: '/jordan-tan' 
+    {
+      name: 'LinkedIn',
+      label: '/jordan-tan'
     },
-    { 
-      name: 'Reddit', 
-      label: 'u/jordan-tan' 
+    {
+      name: 'Reddit',
+      label: 'u/jordan-tan'
     }
   ]
+
+  // Load preferences on mount
+  useEffect(() => {
+    loadPreferences();
+  }, []);
+
+  const loadPreferences = async () => {
+    try {
+      const stored = await AsyncStorage.getItem(PREFERENCES_KEY);
+      if (stored) {
+        setPreferences(JSON.parse(stored));
+      }
+    } catch (error) {
+      console.error('Failed to load preferences:', error);
+    } finally {
+      setLoaded(true);
+    }
+  };
+
+  const savePreferences = async (newPreferences: Record<string, boolean>) => {
+    try {
+      await AsyncStorage.setItem(PREFERENCES_KEY, JSON.stringify(newPreferences));
+      setPreferences(newPreferences);
+    } catch (error) {
+      console.error('Failed to save preferences:', error);
+    }
+  };
+
+  const handleToggle = (key: string, value: boolean) => {
+    const updated = { ...preferences, [key]: value };
+    savePreferences(updated);
+  };
+
+  if (!loaded) {
+    return null; // Or a loading spinner
+  }
 
   return (
     <SafeAreaView style={styles.safeContainer} edges={['top']}>
@@ -50,7 +91,12 @@ export default function PreferencesScreen() {
           </Text>
         </View>
         {info.map(infoPiece =>
-          <SettingsToggle name={infoPiece} key={infoPiece} /> // Bad practice but this is not a dynamic list so wtv
+          <SettingsToggle
+            name={infoPiece}
+            key={infoPiece}
+            value={preferences[infoPiece] || false}
+            onValueChange={(value) => handleToggle(infoPiece, value)}
+          />
         )}
 
         <Divider />
@@ -59,7 +105,13 @@ export default function PreferencesScreen() {
         </Text>
 
         {socials.map(social =>
-          <SettingsToggle name={social.name} label={social.label} key={social.label} /> // Bad practice but this is not a dynamic list so wtv
+          <SettingsToggle
+            name={social.name}
+            label={social.label}
+            key={social.label}
+            value={preferences[social.label] || false}
+            onValueChange={(value) => handleToggle(social.label, value)}
+          />
         )}
       </View>
 

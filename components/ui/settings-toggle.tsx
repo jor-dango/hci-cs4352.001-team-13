@@ -1,10 +1,14 @@
 import { GlobalStyles } from "@/constants/theme";
-import { useState } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 
-export default function SettingsToggle({ name, label }: { name: string, label?: string }) {
-  const [toggled, setToggled] = useState(false);
+interface SettingsToggleProps {
+  name: string;
+  label?: string;
+  value: boolean;
+  onValueChange: (value: boolean) => void;
+}
 
+export default function SettingsToggle({ name, label, value, onValueChange }: SettingsToggleProps) {
   return (
     <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', minWidth: '100%', paddingTop: 8, paddingBottom: 8 }}>
       <View style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
@@ -19,12 +23,10 @@ export default function SettingsToggle({ name, label }: { name: string, label?: 
       </View>
       <TouchableOpacity
         style={{ width: 24, aspectRatio: 1 / 1, backgroundColor: '#BEBEBE', borderRadius: 6, padding: 4 }}
-        onPress={() => setToggled(!toggled)}
+        onPress={() => onValueChange(!value)}
       >
-        <View style={{ backgroundColor: toggled ? '#383AB2' : '', width: '100%', aspectRatio: 1 / 1, borderRadius: 2 }} />
+        <View style={{ backgroundColor: value ? '#383AB2' : '', width: '100%', aspectRatio: 1 / 1, borderRadius: 2 }} />
       </TouchableOpacity>
     </View>
   );
-
-
 }

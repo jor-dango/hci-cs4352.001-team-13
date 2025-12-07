@@ -2,12 +2,18 @@ import BackButton from '@/components/ui/back-button';
 import Divider from '@/components/ui/divider';
 import SettingsToggle from '@/components/ui/settings-toggle';
 import { GlobalStyles } from '@/constants/theme';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { router } from 'expo-router';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+const ALERTS_KEY = '@alerts';
+
 export default function AlertsScreen() {
+  const [alerts, setAlerts] = useState<Record<string, boolean>>({});
+  const [loaded, setLoaded] = useState(false);
+
   const info = [
     'SSN',
     'Email',
@@ -21,6 +27,42 @@ export default function AlertsScreen() {
     'Phone Number'
   ]
 
+  // Load alerts on mount
+  useEffect(() => {
+    loadAlerts();
+  }, []);
+
+  const loadAlerts = async () => {
+    try {
+      const stored = await AsyncStorage.getItem(ALERTS_KEY);
+      if (stored) {
+        setAlerts(JSON.parse(stored));
+      }
+    } catch (error) {
+      console.error('Failed to load alerts:', error);
+    } finally {
+      setLoaded(true);
+    }
+  };
+
+  const saveAlerts = async (newAlerts: Record<string, boolean>) => {
+    try {
+      await AsyncStorage.setItem(ALERTS_KEY, JSON.stringify(newAlerts));
+      setAlerts(newAlerts);
+    } catch (error) {
+      console.error('Failed to save alerts:', error);
+    }
+  };
+
+  const handleToggle = (key: string, value: boolean) => {
+    const updated = { ...alerts, [key]: value };
+    saveAlerts(updated);
+  };
+
+  if (!loaded) {
+    return null; // Or a loading spinner
+  }
+
   return (
     <SafeAreaView style={styles.safeContainer} edges={['top']}>
       <View style={styles.container}>
@@ -31,16 +73,26 @@ export default function AlertsScreen() {
         </Text>
 
         {info.map(infoPiece =>
-          <SettingsToggle name={infoPiece} key={infoPiece} /> // Bad practice but this is not a dynamic list so wtv
+          <SettingsToggle
+            name={infoPiece}
+            key={infoPiece}
+            value={alerts[infoPiece] || false}
+            onValueChange={(value) => handleToggle(infoPiece, value)}
+          />
         )}
 
         <Divider />
         <Text style={[GlobalStyles.body, { fontWeight: 'bold' }]}>
-          What socials are you fine with sharing?
+          Where do you want to receive alerts?
         </Text>
 
         {alertLocs.map(loc =>
-          <SettingsToggle name={loc} key={loc} /> // Bad practice but this is not a dynamic list so wtv
+          <SettingsToggle
+            name={loc}
+            key={loc}
+            value={alerts[loc] || false}
+            onValueChange={(value) => handleToggle(loc, value)}
+          />
         )}
       </View>
 
