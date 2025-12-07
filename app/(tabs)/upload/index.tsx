@@ -15,7 +15,8 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-const BACKEND_URL = "http://10.0.0.22:5001";
+// Use the same IP that Metro is running on (check Expo QR code for your current IP)
+const BACKEND_URL = "http://192.168.1.40:5001";
 
 type FileItem = {
   name: string;

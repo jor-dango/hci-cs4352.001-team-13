@@ -8,8 +8,8 @@ import { useCallback, useState } from "react";
 import { ActivityIndicator, ScrollView, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-// Use localhost for simulator, or your local IP for physical device
-const BACKEND_URL = "http://10.0.0.22:5001";
+// Use the same IP that Metro is running on (check Expo QR code for your current IP)
+const BACKEND_URL = "http://192.168.1.40:5001";
 
 interface UploadedFile {
   filename: string;
