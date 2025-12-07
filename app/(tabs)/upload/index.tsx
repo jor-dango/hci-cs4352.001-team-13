@@ -236,8 +236,16 @@ export default function Upload() {
           visible={modalVisible}
           onRequestClose={() => setModalVisible(false)}
         >
-          <View style={styles.modalBackground}>
-            <View style={styles.modalContainer}>
+          <TouchableOpacity
+            style={styles.modalBackground}
+            activeOpacity={1}
+            onPress={() => setModalVisible(false)}
+          >
+            <TouchableOpacity
+              style={styles.modalContainer}
+              activeOpacity={1}
+              onPress={(e) => e.stopPropagation()}
+            >
               <Text style={styles.modalTitle}>Upload a file</Text>
 
               <ScrollView
@@ -280,22 +288,23 @@ export default function Upload() {
                 ))}
               </ScrollView>
               <TouchableOpacity
-                style={styles.managePermissions}
+                style={styles.uploadButton}
                 onPress={pickAndUploadFile}
                 activeOpacity={0.7}
               >
-                <Text style={styles.manageText}>Upload a file</Text>
+                <Ionicons name="cloud-upload-outline" size={20} color="#FFFFFF" />
+                <Text style={styles.uploadButtonText}>Choose File to Upload</Text>
               </TouchableOpacity>
 
               <TouchableOpacity
-                style={styles.backButton}
+                style={styles.cancelButton}
                 onPress={() => setModalVisible(false)}
                 activeOpacity={0.7}
               >
-                <Text style={styles.backButtonText}>Back</Text>
+                <Text style={styles.cancelButtonText}>Cancel</Text>
               </TouchableOpacity>
-            </View>
-          </View>
+            </TouchableOpacity>
+          </TouchableOpacity>
         </Modal>
       </View>
     </SafeAreaView>
@@ -375,15 +384,23 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginTop: 6,
   },
-  managePermissions: { marginTop: 16 },
-  manageText: {
-    fontSize: 14,
-    color: "#383AB2",
-    textAlign: "left",
-    fontWeight: "500",
-  },
-  backButton: {
+  uploadButton: {
     marginTop: 16,
+    backgroundColor: "#383AB2",
+    paddingVertical: 14,
+    borderRadius: 8,
+    alignItems: "center",
+    flexDirection: "row",
+    justifyContent: "center",
+    gap: 8,
+  },
+  uploadButtonText: {
+    color: "#FFFFFF",
+    fontSize: 16,
+    fontWeight: "600",
+  },
+  cancelButton: {
+    marginTop: 12,
     backgroundColor: "#FFFFFF",
     borderWidth: 1,
     borderColor: "#BEBEBE",
@@ -391,8 +408,8 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     alignItems: "center",
   },
-  backButtonText: {
-    color: "#2C2C2C",
+  cancelButtonText: {
+    color: "#6B7280",
     fontSize: 16,
     fontWeight: "500",
   },
