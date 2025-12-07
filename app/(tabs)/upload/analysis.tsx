@@ -558,7 +558,7 @@ export default function AnalysisScreen() {
             onPress={handleDeleteContract}
             activeOpacity={0.7}
           >
-            <Text style={[GlobalStyles.body, { color: "#DC2626" }]}>
+            <Text style={styles.deleteButtonText}>
               Delete Contract
             </Text>
           </TouchableOpacity>
@@ -712,8 +712,17 @@ const styles = StyleSheet.create({
     height: 75,
   },
   deleteButton: {
-    alignItems: "center",
+    backgroundColor: "#FFFFFF",
+    borderWidth: 1,
+    borderColor: "#DC2626",
     paddingVertical: 12,
+    borderRadius: 8,
+    alignItems: "center",
+  },
+  deleteButtonText: {
+    color: "#DC2626",
+    fontSize: 16,
+    fontWeight: "600",
   },
   presetQuestionsScroll: {
     maxHeight: 40,
