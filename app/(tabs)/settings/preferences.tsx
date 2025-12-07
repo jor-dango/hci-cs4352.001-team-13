@@ -1,9 +1,10 @@
+import BackButton from '@/components/ui/back-button';
 import Divider from '@/components/ui/divider';
 import SettingsToggle from '@/components/ui/settings-toggle';
 import { GlobalStyles } from '@/constants/theme';
 import { router } from 'expo-router';
 import React from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function PreferencesScreen() {
@@ -38,14 +39,7 @@ export default function PreferencesScreen() {
   return (
     <SafeAreaView style={styles.safeContainer} edges={['top']}>
       <View style={styles.container}>
-        <TouchableOpacity
-          style={{ marginBottom: 8 }}
-          onPress={() => router.back()}
-          activeOpacity={0.7}
-        >
-          <Text style={[GlobalStyles.body, { color: "#383AB2" }]}>← Go Back</Text>
-        </TouchableOpacity>
-
+        <BackButton onPress={() => router.back()} />
         <Divider />
         <View>
           <Text style={[GlobalStyles.body, { fontWeight: 'bold' }]}>

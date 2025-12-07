@@ -1,3 +1,4 @@
+import BackButton from '@/components/ui/back-button';
 import { GlobalStyles } from '@/constants/theme';
 import { router } from 'expo-router';
 import React, { useState } from 'react';
@@ -22,13 +23,7 @@ export default function VerificationScreen() {
   return (
     <SafeAreaView style={styles.safeContainer} edges={['top']}>
       <View style={styles.outerContainer}>
-        <TouchableOpacity
-          style={styles.backButton}
-          onPress={() => router.back()}
-          activeOpacity={0.7}
-        >
-          <Text style={[GlobalStyles.body, { color: "#383AB2" }]}>← Go Back</Text>
-        </TouchableOpacity>
+        <BackButton onPress={() => router.back()} />
         <View style={styles.container}>
           <Text style={[GlobalStyles.body, { fontWeight: 'bold' }]}>
             Please confirm your identity:

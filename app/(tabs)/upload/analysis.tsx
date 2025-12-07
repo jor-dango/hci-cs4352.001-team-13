@@ -1,4 +1,5 @@
 import ActionButtonPair from "@/components/ui/action-button-pair";
+import BackButton from "@/components/ui/back-button";
 import ComparisonModal from "@/components/ui/comparison-modal";
 import { GlobalStyles } from "@/constants/theme";
 import { LinearGradient } from "expo-linear-gradient";
@@ -13,7 +14,6 @@ import {
   StyleSheet,
   Text,
   TextInput,
-  TouchableOpacity,
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -255,15 +255,7 @@ export default function AnalysisScreen() {
         keyboardVerticalOffset={0}
       >
         <SafeAreaView style={styles.chatHeader}>
-          <TouchableOpacity
-            onPress={handleBack}
-            style={styles.backButton}
-            activeOpacity={0.7}
-          >
-            <Text style={[GlobalStyles.body, { color: "#383AB2" }]}>
-              ← Back
-            </Text>
-          </TouchableOpacity>
+          <BackButton onPress={handleBack} label="Back" />
           <Text style={GlobalStyles.h3}>Ask Questions</Text>
         </SafeAreaView>
 
@@ -340,15 +332,10 @@ export default function AnalysisScreen() {
         style={styles.container}
         contentContainerStyle={styles.contentContainer}
       >
-        <TouchableOpacity
-          style={styles.backButton}
+        <BackButton
           onPress={handleBackNavigation}
-          activeOpacity={0.7}
-        >
-          <Text style={[GlobalStyles.body, { color: "#383AB2" }]}>
-            ← {isFromHistory ? "Back to History" : "Back to Upload"}
-          </Text>
-        </TouchableOpacity>
+          label={isFromHistory ? "Back to History" : "Back to Upload"}
+        />
         <Text style={GlobalStyles.h3}>Contract Analysis & Summary</Text>
         {filename && (
           <Text
