@@ -483,7 +483,10 @@ export default function AnalysisScreen() {
               </Text>
             </View>
             <TouchableOpacity
-              onPress={() => setShowPreferencesBanner(false)}
+              onPress={async () => {
+                await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                setShowPreferencesBanner(false);
+              }}
               style={styles.closeBannerButton}
               activeOpacity={0.7}
             >
@@ -506,9 +509,10 @@ export default function AnalysisScreen() {
           <Text style={GlobalStyles.body}>Other sections and concerns:</Text>
           <TouchableOpacity
             style={styles.lightContainer}
-            onPress={() => 
-              setOpenSections((prev) => ({...prev, terms: !prev.terms}))
-            }
+            onPress={async () => {
+              await Haptics.selectionAsync();
+              setOpenSections((prev) => ({...prev, terms: !prev.terms}));
+            }}
             activeOpacity={0.7}
           >
             <Text style={GlobalStyles.small}>{openSections.terms ? "▼ " : "▶ "} I. TERMS</Text>
@@ -524,9 +528,10 @@ export default function AnalysisScreen() {
 
           <TouchableOpacity
             style={styles.lightContainer}
-            onPress={() => 
-              setOpenSections((prev) => ({...prev, pay: !prev.pay}))
-            }
+            onPress={async () => {
+              await Haptics.selectionAsync();
+              setOpenSections((prev) => ({...prev, pay: !prev.pay}));
+            }}
             activeOpacity={0.7}
           >
             <Text style={GlobalStyles.small}>{openSections.pay ? "▼ " : "▶ "} II. PAY</Text>
@@ -542,9 +547,10 @@ export default function AnalysisScreen() {
 
           <TouchableOpacity
             style={styles.lightContainer}
-            onPress={() => 
-              setOpenSections((prev) => ({...prev, schedule: !prev.schedule}))
-            }
+            onPress={async () => {
+              await Haptics.selectionAsync();
+              setOpenSections((prev) => ({...prev, schedule: !prev.schedule}));
+            }}
             activeOpacity={0.7}
           >
             <Text style={GlobalStyles.small}>{openSections.schedule ? "▼ " : "▶ "} III. SCHEDULE</Text>

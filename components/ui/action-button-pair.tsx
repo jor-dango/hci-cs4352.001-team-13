@@ -1,5 +1,6 @@
 import { View, TouchableOpacity, Text, StyleSheet } from "react-native";
 import { GlobalStyles } from "@/constants/theme";
+import * as Haptics from "expo-haptics";
 
 interface ActionButtonPairProps {
   leftButtonText: string;
@@ -18,11 +19,25 @@ export default function ActionButtonPair({
 }: ActionButtonPairProps) {
   const isPrimaryLeft = variant === "left-primary";
 
+  const handleLeftPress = async () => {
+    await Haptics.impactAsync(
+      isPrimaryLeft ? Haptics.ImpactFeedbackStyle.Medium : Haptics.ImpactFeedbackStyle.Light
+    );
+    onLeftPress();
+  };
+
+  const handleRightPress = async () => {
+    await Haptics.impactAsync(
+      isPrimaryLeft ? Haptics.ImpactFeedbackStyle.Light : Haptics.ImpactFeedbackStyle.Medium
+    );
+    onRightPress();
+  };
+
   return (
     <View style={styles.container}>
       <TouchableOpacity
         style={[styles.button, isPrimaryLeft && styles.primaryButton]}
-        onPress={onLeftPress}
+        onPress={handleLeftPress}
       >
         <Text style={[GlobalStyles.body, { color: "#FFFFFF" }]}>
           {leftButtonText}
@@ -30,7 +45,7 @@ export default function ActionButtonPair({
       </TouchableOpacity>
       <TouchableOpacity
         style={[styles.button, isPrimaryLeft && styles.secondaryButton]}
-        onPress={onRightPress}
+        onPress={handleRightPress}
       >
         <Text
           style={[

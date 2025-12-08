@@ -223,7 +223,10 @@ export default function Upload() {
         {/* Upload box */}
         <TouchableOpacity
           style={styles.uploadBox}
-          onPress={() => setModalVisible(true)}
+          onPress={async () => {
+            await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+            setModalVisible(true);
+          }}
           activeOpacity={0.7}
         >
           <Ionicons name="cloud-upload-outline" size={48} color="#9CA3AF" />
@@ -241,7 +244,10 @@ export default function Upload() {
         <TouchableOpacity
           style={styles.takePictureButton}
           activeOpacity={0.7}
-          onPress={takePhotoAndUpload}
+          onPress={async () => {
+            await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+            takePhotoAndUpload();
+          }}
         >
           <Text
             style={[GlobalStyles.body, { color: "#FFF", fontWeight: "500" }]}
@@ -286,7 +292,8 @@ export default function Upload() {
                   <TouchableOpacity
                     key={index}
                     style={styles.fileCard}
-                    onPress={() => {
+                    onPress={async () => {
+                      await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
                       setModalVisible(false);
                       router.push({
                         pathname: "/(tabs)/upload/analysis",
@@ -302,8 +309,9 @@ export default function Upload() {
                     <Text style={styles.fileName}>{file.name}</Text>
                     <TouchableOpacity
                       style={styles.removeButton}
-                      onPress={(e) => {
+                      onPress={async (e) => {
                         e.stopPropagation();
+                        await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
                         removeFile(index);
                       }}
                     >
@@ -318,7 +326,10 @@ export default function Upload() {
               </ScrollView>
               <TouchableOpacity
                 style={styles.uploadButton}
-                onPress={pickAndUploadFile}
+                onPress={async () => {
+                  await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+                  pickAndUploadFile();
+                }}
                 activeOpacity={0.7}
               >
                 <Ionicons name="cloud-upload-outline" size={20} color="#FFFFFF" />
@@ -327,7 +338,10 @@ export default function Upload() {
 
               <TouchableOpacity
                 style={styles.cancelButton}
-                onPress={() => setModalVisible(false)}
+                onPress={async () => {
+                  await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                  setModalVisible(false);
+                }}
                 activeOpacity={0.7}
               >
                 <Text style={styles.cancelButtonText}>Cancel</Text>

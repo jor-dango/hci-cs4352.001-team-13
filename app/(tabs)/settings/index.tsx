@@ -1,5 +1,6 @@
 import Divider from "@/components/ui/divider";
 import { GlobalStyles } from "@/constants/theme";
+import * as Haptics from "expo-haptics";
 import { useRouter } from "expo-router";
 import { ChevronRight } from 'lucide-react-native';
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
@@ -7,6 +8,11 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function SettingsScreen() {
   const router = useRouter();
+
+  const handleNavigate = async (path: string) => {
+    await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    router.push(path as any);
+  };
 
   return (
     <SafeAreaView style={styles.safeContainer} edges={['top']}>
@@ -16,7 +22,7 @@ export default function SettingsScreen() {
         <Divider />
         <TouchableOpacity
           style={styles.settingsRow}
-          onPress={() => router.push("/(tabs)/settings/preferences")}
+          onPress={() => handleNavigate("/(tabs)/settings/preferences")}
           activeOpacity={0.7}
         >
           <Text style={GlobalStyles.body}>Info Preferences</Text>
@@ -25,7 +31,7 @@ export default function SettingsScreen() {
         <Divider />
         <TouchableOpacity
           style={styles.settingsRow}
-          onPress={() => router.push("/(tabs)/settings/alerts")}
+          onPress={() => handleNavigate("/(tabs)/settings/alerts")}
           activeOpacity={0.7}
         >
           <Text style={GlobalStyles.body}>Alerts</Text>
@@ -34,7 +40,7 @@ export default function SettingsScreen() {
         <Divider />
         <TouchableOpacity
           style={styles.settingsRow}
-          onPress={() => router.push("/(tabs)/settings/verification")}
+          onPress={() => handleNavigate("/(tabs)/settings/verification")}
           activeOpacity={0.7}
         >
           <Text style={GlobalStyles.body}>Connected Accounts</Text>

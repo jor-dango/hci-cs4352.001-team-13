@@ -23,8 +23,8 @@ export default function AlertsScreen() {
     'Social Media'
   ]
   const alertLocs = [
-    'Email',
-    'Phone Number'
+    { key: 'alert_via_Email', name: 'Email' },
+    { key: 'alert_via_Phone Number', name: 'Phone Number' }
   ]
 
   // Load alerts on mount
@@ -88,10 +88,10 @@ export default function AlertsScreen() {
 
         {alertLocs.map(loc =>
           <SettingsToggle
-            name={loc}
-            key={loc}
-            value={alerts[loc] || false}
-            onValueChange={(value) => handleToggle(loc, value)}
+            name={loc.name}
+            key={loc.key}
+            value={alerts[loc.key] || false}
+            onValueChange={(value) => handleToggle(loc.key, value)}
           />
         )}
       </View>

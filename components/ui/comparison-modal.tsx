@@ -7,6 +7,7 @@ import {
   View,
 } from "react-native";
 import { GlobalStyles } from "@/constants/theme";
+import * as Haptics from "expo-haptics";
 
 interface Contract {
   filename: string;
@@ -34,6 +35,17 @@ export default function ComparisonModal({
     (c) => c.filename !== currentContract
   );
 
+  const handleClose = async () => {
+    await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    onClose();
+  };
+
+  const handleSelectContract = async (filename: string) => {
+    await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    onSelectContract(filename);
+    onClose();
+  };
+
   return (
     <Modal
       visible={visible}
@@ -46,7 +58,7 @@ export default function ComparisonModal({
           <Text style={[GlobalStyles.h3, { flex: 1, flexShrink: 1 }]}>
             Select Contract to Compare
           </Text>
-          <TouchableOpacity onPress={onClose} style={styles.closeButton}>
+          <TouchableOpacity onPress={handleClose} style={styles.closeButton}>
             <Text style={[GlobalStyles.body, { color: "#383AB2" }]}>
               Cancel
             </Text>
@@ -65,10 +77,7 @@ export default function ComparisonModal({
               <TouchableOpacity
                 key={contract.filename}
                 style={styles.contractItem}
-                onPress={() => {
-                  onSelectContract(contract.filename);
-                  onClose();
-                }}
+                onPress={() => handleSelectContract(contract.filename)}
               >
                 <View style={styles.contractInfo}>
                   <Text style={GlobalStyles.body}>{contract.contractName}</Text>

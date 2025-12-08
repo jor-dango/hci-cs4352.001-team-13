@@ -1,4 +1,5 @@
 import { GlobalStyles } from "@/constants/theme";
+import * as Haptics from "expo-haptics";
 import { Text, TouchableOpacity, StyleSheet } from "react-native";
 
 interface BackButtonProps {
@@ -7,10 +8,15 @@ interface BackButtonProps {
 }
 
 export default function BackButton({ onPress, label = "Go Back" }: BackButtonProps) {
+  const handlePress = async () => {
+    await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    onPress();
+  };
+
   return (
     <TouchableOpacity
       style={styles.backButton}
-      onPress={onPress}
+      onPress={handlePress}
       activeOpacity={0.7}
     >
       <Text style={[GlobalStyles.body, { color: "#383AB2" }]}>
