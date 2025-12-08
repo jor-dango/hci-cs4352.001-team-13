@@ -2,6 +2,7 @@ import ActionButtonPair from "@/components/ui/action-button-pair";
 import BackButton from "@/components/ui/back-button";
 import ComparisonModal from "@/components/ui/comparison-modal";
 import { GlobalStyles } from "@/constants/theme";
+import * as Haptics from "expo-haptics";
 import { LinearGradient } from "expo-linear-gradient";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { useEffect, useRef, useState } from "react";
@@ -180,6 +181,11 @@ export default function AnalysisScreen() {
 
       setIsArchived(true);
 
+      // Haptic feedback for success
+      await Haptics.notificationAsync(
+        Haptics.NotificationFeedbackType.Success
+      );
+
       // Show success feedback
       Alert.alert(
         "Successfully Saved! ✓",
@@ -203,6 +209,11 @@ export default function AnalysisScreen() {
   const handleDeleteContract = async () => {
     if (!filename) return;
 
+    // Warning haptic feedback
+    await Haptics.notificationAsync(
+      Haptics.NotificationFeedbackType.Warning
+    );
+
     Alert.alert(
       "Delete Contract",
       "Are you sure you want to delete this contract? This action cannot be undone.",
@@ -222,6 +233,10 @@ export default function AnalysisScreen() {
               );
 
               if (response.ok) {
+                // Success haptic feedback
+                await Haptics.notificationAsync(
+                  Haptics.NotificationFeedbackType.Success
+                );
                 Alert.alert("Deleted", "Contract deleted successfully", [
                   {
                     text: "OK",
@@ -236,10 +251,16 @@ export default function AnalysisScreen() {
                   },
                 ]);
               } else {
+                await Haptics.notificationAsync(
+                  Haptics.NotificationFeedbackType.Error
+                );
                 Alert.alert("Error", "Failed to delete contract");
               }
             } catch (err) {
               console.error(err);
+              await Haptics.notificationAsync(
+                Haptics.NotificationFeedbackType.Error
+              );
               Alert.alert("Error", "Failed to delete contract");
             }
           },
@@ -278,8 +299,11 @@ export default function AnalysisScreen() {
     );
   };
 
-  const handleSend = () => {
+  const handleSend = async () => {
     if (inputText.trim()) {
+      // Light haptic feedback
+      await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+
       setMessages([...messages, { text: inputText, isUser: true }]);
       setInputText("");
 
@@ -296,7 +320,10 @@ export default function AnalysisScreen() {
     }
   };
 
-  const handlePresetQuestion = (question: string) => {
+  const handlePresetQuestion = async (question: string) => {
+    // Light haptic feedback
+    await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+
     setMessages([...messages, { text: question, isUser: true }]);
 
     // Simulate AI response

@@ -1,6 +1,7 @@
 import { GlobalStyles } from "@/constants/theme";
 import { Ionicons } from "@expo/vector-icons";
 import * as DocumentPicker from "expo-document-picker";
+import * as Haptics from "expo-haptics";
 import * as ImagePicker from "expo-image-picker";
 import { useRouter } from "expo-router";
 import { useState } from "react";
@@ -78,6 +79,11 @@ export default function Upload() {
       }
 
       if (res.ok) {
+        // Success haptic feedback
+        await Haptics.notificationAsync(
+          Haptics.NotificationFeedbackType.Success
+        );
+
         const savedName = data.savedFileName || name;
         setFiles((prev) => [...prev, { name: savedName, uri }]);
         setMsg(data.message || "Photo uploaded successfully");
@@ -88,11 +94,17 @@ export default function Upload() {
           params: { filename: savedName },
         });
       } else {
+        await Haptics.notificationAsync(
+          Haptics.NotificationFeedbackType.Error
+        );
         setMsg(data.error || "Upload failed");
       }
       setTimeout(() => setMsg(""), 2500);
     } catch (err) {
       console.error(err);
+      await Haptics.notificationAsync(
+        Haptics.NotificationFeedbackType.Error
+      );
       setMsg("❌ Upload failed");
       setTimeout(() => setMsg(""), 2500);
     }
@@ -134,6 +146,11 @@ export default function Upload() {
       }
 
       if (res.ok) {
+        // Success haptic feedback
+        await Haptics.notificationAsync(
+          Haptics.NotificationFeedbackType.Success
+        );
+
         const savedName = data.savedFileName || name;
         setFiles((prev) => [...prev, { name: savedName, uri }]);
         setMsg(data.message || "File uploaded successfully");
@@ -145,11 +162,17 @@ export default function Upload() {
           params: { filename: savedName },
         });
       } else {
+        await Haptics.notificationAsync(
+          Haptics.NotificationFeedbackType.Error
+        );
         setMsg(data.error || "Upload failed");
       }
       setTimeout(() => setMsg(""), 2500);
     } catch (err) {
       console.error(err);
+      await Haptics.notificationAsync(
+        Haptics.NotificationFeedbackType.Error
+      );
       setMsg("❌ Upload failed");
       setTimeout(() => setMsg(""), 2500);
     }
@@ -173,9 +196,15 @@ export default function Upload() {
       }
 
       if (res.ok) {
+        await Haptics.notificationAsync(
+          Haptics.NotificationFeedbackType.Success
+        );
         setFiles((prev) => prev.filter((_, i) => i !== index));
         setMsg("✅ Successfully deleted");
       } else {
+        await Haptics.notificationAsync(
+          Haptics.NotificationFeedbackType.Error
+        );
         setMsg(data.error || "❌ Failed to delete file");
       }
       setTimeout(() => setMsg(""), 2500);
