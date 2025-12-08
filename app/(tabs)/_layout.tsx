@@ -1,10 +1,15 @@
 import { Tabs } from "expo-router";
 import { useColorScheme } from "@/hooks/use-color-scheme";
 import Ionicons from "@expo/vector-icons/Ionicons";
+import * as Haptics from "expo-haptics";
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
   const isDark = colorScheme === "dark";
+
+  const handleTabPress = () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+  };
 
   return (
     <Tabs
@@ -36,6 +41,9 @@ export default function TabLayout() {
             />
           ),
         }}
+        listeners={{
+          tabPress: handleTabPress,
+        }}
       />
 
       <Tabs.Screen
@@ -50,6 +58,9 @@ export default function TabLayout() {
             />
           ),
         }}
+        listeners={{
+          tabPress: handleTabPress,
+        }}
       />
 
       <Tabs.Screen
@@ -63,6 +74,9 @@ export default function TabLayout() {
               color={color}
             />
           ),
+        }}
+        listeners={{
+          tabPress: handleTabPress,
         }}
       />
     </Tabs>
