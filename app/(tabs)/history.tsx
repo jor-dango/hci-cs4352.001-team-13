@@ -9,7 +9,7 @@ import { ActivityIndicator, ScrollView, StyleSheet, Text, View } from "react-nat
 import { SafeAreaView } from "react-native-safe-area-context";
 
 // Use the same IP that Metro is running on (check Expo QR code for your current IP)
-const BACKEND_URL = "http://192.168.1.40:5001";
+const BACKEND_URL = "http://172.20.10.2:5001";
 
 interface UploadedFile {
   filename: string;
