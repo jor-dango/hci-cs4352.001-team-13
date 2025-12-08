@@ -2,10 +2,12 @@ import ActionButtonPair from "@/components/ui/action-button-pair";
 import BackButton from "@/components/ui/back-button";
 import ComparisonModal from "@/components/ui/comparison-modal";
 import { GlobalStyles } from "@/constants/theme";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useFocusEffect } from "@react-navigation/native";
 import * as Haptics from "expo-haptics";
 import { LinearGradient } from "expo-linear-gradient";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
   ActivityIndicator,
   Alert,
@@ -22,6 +24,17 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 // Use the same IP that Metro is running on (check Expo QR code for your current IP)
 const BACKEND_URL = "http://172.20.10.2:5001";
+const PREFERENCES_KEY = "@preferences";
+
+// Content mapping for each info type
+const INFO_CONTENT: Record<string, string> = {
+  "SSN": "- Verification: Your employer requires SSN for tax purposes and background checks.\n\n- Storage: SSN will be stored in encrypted company databases for the duration of employment and 7 years after termination.\n\n- Third-party sharing: SSN may be shared with payroll processors and government agencies as required by law.",
+  "Email": "- Company communications: Your email will be used for all official company communications including contracts, policy updates, and work schedules.\n\n- Third-party services: Email may be shared with HR management software and benefits providers.\n\n- Marketing: Email will not be used for marketing purposes without separate consent.",
+  "Phone Number": "- Contact purposes: Phone number will be used for scheduling, emergency contacts, and work-related communications.\n\n- Retention: Number will be kept for 3 years after employment termination.\n\n- Text messages: You may receive work-related text messages unless you opt out.",
+  "First Name": "- Public use: First name may be displayed on employee badges, schedules, and internal directories.\n\n- Client interaction: First name may be shared with clients during service interactions.\n\n- Privacy: Last name will not be disclosed to clients without your consent.",
+  "Last Name": "- Internal use: Last name is used for payroll, tax documents, and internal records.\n\n- Background checks: Full legal name required for employment verification and background screening.\n\n- Limited disclosure: Last name will not be publicly displayed without permission.",
+  "Social Media": "- Monitoring policy: Employer reserves the right to review public social media posts that reference the company.\n\n- Linking restrictions: You may not list company affiliation on social media without approval.\n\n- Content guidelines: Social media activity must not violate company code of conduct or confidentiality agreements.",
+};
 
 export default function AnalysisScreen() {
   const router = useRouter();
@@ -43,6 +56,8 @@ export default function AnalysisScreen() {
   const [openSections, setOpenSections] = useState({terms: false, pay: false, schedule: false});
   const [showPreferencesBanner, setShowPreferencesBanner] = useState(true);
   const scrollViewRef = useRef<ScrollView>(null);
+  const [preferences, setPreferences] = useState<Record<string, boolean>>({});
+  const [concernedInfoSections, setConcernedInfoSections] = useState<Record<string, boolean>>({});
 
   // Check if we came from history (already archived)
   const isFromHistory = source === "history";
@@ -52,6 +67,24 @@ export default function AnalysisScreen() {
       fetchFileMetadata();
     }
   }, [filename]);
+
+  // Load user preferences whenever screen comes into focus
+  useFocusEffect(
+    useCallback(() => {
+      loadPreferences();
+    }, [])
+  );
+
+  const loadPreferences = async () => {
+    try {
+      const stored = await AsyncStorage.getItem(PREFERENCES_KEY);
+      if (stored) {
+        setPreferences(JSON.parse(stored));
+      }
+    } catch (error) {
+      console.error('Failed to load preferences:', error);
+    }
+  };
 
   // Auto-scroll to bottom when messages change
   useEffect(() => {
@@ -505,6 +538,39 @@ export default function AnalysisScreen() {
             </Text>
           </View>
         </View>
+        {Object.keys(preferences).filter(key => preferences[key] && INFO_CONTENT[key]).length > 0 && (
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Your Concerned Info</Text>
+            <Text style={[GlobalStyles.body, { color: "#6C6C6C", marginTop: -4 }]}>
+              Based on your preferences, here's how this contract handles the information you care about:
+            </Text>
+            {Object.keys(preferences)
+              .filter(key => preferences[key] && INFO_CONTENT[key])
+              .map((infoType) => (
+                <React.Fragment key={infoType}>
+                  <TouchableOpacity
+                    style={styles.lightContainer}
+                    onPress={async () => {
+                      await Haptics.selectionAsync();
+                      setConcernedInfoSections((prev) => ({...prev, [infoType]: !prev[infoType]}));
+                    }}
+                    activeOpacity={0.7}
+                  >
+                    <Text style={GlobalStyles.small}>
+                      {concernedInfoSections[infoType] ? "▼ " : "▶ "}{infoType.toUpperCase()}
+                    </Text>
+                  </TouchableOpacity>
+                  {concernedInfoSections[infoType] && (
+                    <View style={styles.lightContainer}>
+                      <Text style={GlobalStyles.small}>
+                        {INFO_CONTENT[infoType]}
+                      </Text>
+                    </View>
+                  )}
+                </React.Fragment>
+              ))}
+          </View>
+        )}
         <View style={styles.section}>
           <Text style={GlobalStyles.body}>Other sections and concerns:</Text>
           <TouchableOpacity
